@@ -49,11 +49,21 @@ class Board:
         """
         field = self.field(x, y)
         if not field:
-            raise Exception(f"Políčko [{x}, {y}] nebylo nalezeno!")
+            raise BoardError(f"Políčko [{x}, {y}] nebylo nalezeno!", self)
         field.mark = mark
 
 
+class BoardError(Exception):
+    """"""
 
+    def __init__(self, message: str, board: Board):
+        Exception.__init__(self, message)
+        self._board = board
+
+    @property
+    def board(self) -> Board:
+        """Hrací plocha, v jejímž kontextu došlo k chybě."""
+        return self._board
 
 
 
