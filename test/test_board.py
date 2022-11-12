@@ -1,6 +1,6 @@
 import pytest
 
-from src.game.board import Board
+from src.game.board import Board, BoardError
 from src.game.field import Field
 
 
@@ -63,8 +63,15 @@ def test_field_mark_shorthand(board):
 def test_field_mark_shorthand_nonexisting_field(board):
     assert not board.has_field(-5, -5)
 
-    with pytest.raises(Exception) as be:
+    with pytest.raises(BoardError) as be:
         board.mark(-5, -5, "X")
+
+
+def test_multiple_fields_with_same_coords(board):
+    collision_fields = [Field(1, 1), Field(1, 1), Field(1, 1)]
+
+    with pytest.raises(BoardError) as be:
+        Board(collision_fields)
 
 
 
