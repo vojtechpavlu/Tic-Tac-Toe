@@ -14,8 +14,8 @@ def field():
 def test_field_creation(field):
     assert field
 
-    field = Field(1, 1, "A")
-    assert field.mark == "A"
+    field = Field(1, 1, "X")
+    assert field.mark == "X"
 
     field = Field(1, 1)
     assert field.mark == ""
@@ -61,6 +61,37 @@ def test_is_marked_negative(field):
 def test_is_marked_positive(field):
     field.mark = "X"
     assert field.is_marked
+
+
+def test_field_available_marks():
+    assert Field.available_marks() == ("X", "O")
+
+
+def test_wrong_mark(field):
+    assert not field.is_marked
+
+    with pytest.raises(ValueError) as ve:
+        field.mark = "W"
+
+
+def test_overwrite(field):
+    assert not field.is_marked
+
+    field.mark = "X"
+
+    with pytest.raises(ValueError) as ve:
+        field.mark = "O"
+
+
+def test_mark_empty(field):
+    assert not field.is_marked
+
+    field.mark = "X"
+
+    assert field.is_marked
+
+    with pytest.raises(ValueError) as ve:
+        field.mark = ""
 
 
 
