@@ -1,19 +1,27 @@
-""""""
+"""Modul obsahuje všechny důležité prostředky pro práci s hrací plochou.
+
+Konkrétně obsahuje definici třídy `Board` a definici specifické výjimky,
+dojde-li k problému v rámci hrací plochy (`BoardError`).
+"""
 
 from typing import Iterable
 from src.game.field import Field
 
 
 class Board:
-    """"""
+    """Instance této třídy reprezentují hrací plochu a poskytují základní
+    nástroje pro práci s ní.
+
+    Samotná hrací plocha se sestává z políček (instancí třídy `Field`).
+    """
 
     def __init__(self, fields: Iterable[Field]):
-        self._fields = list(fields)
+        self.__fields = list(fields)
 
     @property
     def fields(self) -> tuple[Field]:
         """Ntice políček, ze kterých se hrací plocha skládá."""
-        return tuple(self._fields)
+        return tuple(self.__fields)
 
     @property
     def size(self) -> int:
@@ -54,9 +62,14 @@ class Board:
 
 
 class BoardError(Exception):
-    """"""
+    """Výjimka rozšiřující obecnou třídu výjimky, která poskytuje specifické
+    rozhraní pro poskytování hrací plochy, v jejímž kontextu došlo k chybě.
+    """
 
     def __init__(self, message: str, board: Board):
+        """Initor, který přijímá zprávu o chybě a hrací plochu, v jejímž
+        kontextu k chybě došlo.
+        """
         Exception.__init__(self, message)
         self._board = board
 

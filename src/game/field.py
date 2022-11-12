@@ -1,12 +1,32 @@
-""""""
+"""Tento modul obsahuje prostředky pro práci s políčkem.
+
+Konkrétně obsahuje především definici třídy políčka (`Field`), která poskytuje
+abstrakci nad samotným políčkem hry.
+
+Dále obsahuje definici konkrétní výjimky, která je vyhozena, dojde-li k
+problému na úrovni políčka.
+"""
 
 
 class Field:
-    """"""
+    """Instance této třídy reprezentují políčka piškvorek.
 
+    Každé políčko má vlastní souřadnice (reprezentující polohu na hrací ploše)
+    a své označení - používané pro reprezentaci tahu hráče.
+    """
+
+    # Povolené značky
     __AVAILABLE_MARKS = ("X", "O")
 
     def __init__(self, x: int, y: int, mark: str = ""):
+        """Initor, který přijímá souřadnice políčka na hrací ploše
+        specifikovaných jako souřadnice na osách `x` a `y`. Dále přijímá
+        označení políčka (`mark`), které může nést pouze omezené hodnoty.
+
+        Konkrétně lze políčko označit prázdným řetězcem, pak jde o neoznačené
+        políčko. Alternativně ho lze označit ještě křížkem (znakem `X`) nebo
+        kolečkem (znakem `O`) - viz třídní proměnná `__AVAILABLE_MARKS`.
+        """
         self.__x = x
         self.__y = y
         self.__mark = mark
