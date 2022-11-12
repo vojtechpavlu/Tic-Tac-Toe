@@ -61,6 +61,21 @@ class Board:
         field.mark = mark
 
 
+def default_board() -> Board:
+    """Tovární funkce pro vytvoření obecné, jednoduché hrací plochy s výchozím
+    nastavením."""
+    # Inicializace prázdného seznamu
+    fields = []
+
+    # Vygenerování všech políček
+    for x in range(3):
+        for y in range(3):
+            fields.append(Field(x, y))
+
+    # Navrácení nové instance hrací plochy
+    return Board(fields)
+
+
 class BoardError(Exception):
     """Výjimka rozšiřující obecnou třídu výjimky, která poskytuje specifické
     rozhraní pro poskytování hrací plochy, v jejímž kontextu došlo k chybě.
