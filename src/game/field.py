@@ -48,7 +48,7 @@ class Field:
         """Nastavuje znak, kterým je dané políčko označeno."""
         self.check_mark(new_mark)
         if self.is_marked:
-            raise ValueError(f"Značku nelze znovu změnit!")
+            raise FieldError(f"Značku nelze znovu změnit!", self)
         self.__mark = new_mark
 
     @property
@@ -66,10 +66,10 @@ class Field:
         """Kontroluje, zda-li je dodaná značka korektní. Pokud není, je
         vyhozena výjimka."""
         if len(mark) > 1:
-            raise ValueError(f"Očekávaná délka je 0 nebo jeden znak: "
+            raise FieldError(f"Očekávaná délka je 0 nebo jeden znak: "
                              f"'{mark}'")
         elif len(mark) == 1 and mark not in Field.available_marks():
-            raise ValueError(
+            raise FieldError(
                 f"Neočekávaná značka: '{mark}'. "
                 f"Zkus některou z: {Field.available_marks}")
 
@@ -81,12 +81,18 @@ class FieldError(Exception):
     Kromě standardní výjimky je vybavena i referencí na políčko, v jehož
     kontextu k chybě došlo."""
 
-    def __init__(self, message: str, field: Field):
+    def __init__(self, message: str, field: Field = None):
         """Initor, který přijímá textovou zprávu o chybě a referenci na
-        políčko, v jehož kontextu k chybě došlo.
+        políčko, v jehož kontextu k chybě došlo. Tento parametr je defaultně
+        nastaven jako None (jde o nepovinnou složku).
         """
         self._message = message
         self._field = field
+
+    @property
+    def has_field(self) -> bool:
+        """Vrací, zda-li bylo výjimce poskytnuto políčko."""
+        return self.field is not None
 
     @property
     def field(self) -> Field:
