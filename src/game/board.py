@@ -18,6 +18,10 @@ class Board:
     def __init__(self, fields: Iterable[Field]):
         self.__fields = list(fields)
 
+        if len(set(self.__field_cords)) != self.size:
+            raise BoardError(f"Souřadnice jednotlivých políček musí být "
+                             f"unikátní: {self.__field_cords}", self)
+
     @property
     def fields(self) -> tuple[Field]:
         """Ntice políček, ze kterých se hrací plocha skládá."""
@@ -37,6 +41,12 @@ class Board:
     def unmarked_fields(self) -> tuple[Field]:
         """Vrací ntici označených políček."""
         return tuple([field for field in self.fields if not field.is_marked])
+
+    @property
+    def __field_cords(self) -> tuple[tuple[int, int]]:
+        """Vrací ntici dvojic (také ntic) reprezentujících souřadnice políček.
+        """
+        return tuple([field.xy for field in self.fields])
 
     def has_field(self, x: int, y: int) -> bool:
         """Vrátí informaci o tom, zda-li je na hrací ploše políčko přítomné.
