@@ -76,6 +76,11 @@ class Field:
         """Vrací, zda-li je políčko označeno či nikoliv."""
         return self.mark != ""
 
+    @property
+    def copy(self) -> "Field":
+        """Vrací kopii tohoto objektu."""
+        return Field(self.x, self.y, self.mark)
+
     @classmethod
     def available_marks(cls) -> tuple[str, str]:
         """Značky, kterými je možné políčko označit."""

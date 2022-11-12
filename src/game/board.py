@@ -49,6 +49,24 @@ class Board:
         """
         return tuple([field.xy for field in self.fields])
 
+    @property
+    def board_state(self) -> tuple[tuple[str]]:
+        """"""
+        lines = []
+        substitutes = list(range(1, 10))
+        for y in range(3):
+            line = []
+            for x in range(3):
+                f = self.field(x, y)
+                line.append(f.mark if f.is_marked else str(substitutes.pop(0)))
+            lines.append(tuple(line))
+        return tuple(lines)
+
+    @property
+    def copy(self) -> "Board":
+        """Vrací hlubokou kopii tohoto objektu."""
+        return Board([f.copy for f in self.fields])
+
     def has_field(self, x: int, y: int) -> bool:
         """Vrátí informaci o tom, zda-li je na hrací ploše políčko přítomné.
         """
