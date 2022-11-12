@@ -60,6 +60,13 @@ def test_field_mark_shorthand(board):
     assert board.field(1, 1).is_marked
 
 
+def test_field_mark_shorthand_nonexisting_field(board):
+    assert not board.has_field(-5, -5)
+
+    with pytest.raises(Exception) as be:
+        board.mark(-5, -5, "X")
+
+
 
 
 
