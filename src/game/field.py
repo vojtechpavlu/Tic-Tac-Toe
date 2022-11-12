@@ -4,13 +4,14 @@
 class Field:
     """"""
 
+    __AVAILABLE_MARKS = ("X", "O")
+
     def __init__(self, x: int, y: int, mark: str = ""):
         self.__x = x
         self.__y = y
         self.__mark = mark
 
         self.check_mark(mark)
-
 
     @property
     def x(self) -> int:
@@ -46,12 +47,19 @@ class Field:
     def mark(self, new_mark: str):
         """Nastavuje znak, kterým je dané políčko označeno."""
         self.check_mark(new_mark)
+        if self.is_marked:
+            raise ValueError(f"Značku nelze znovu změnit!")
         self.__mark = new_mark
 
     @property
     def is_marked(self) -> bool:
         """Vrací, zda-li je políčko označeno či nikoliv."""
         return self.mark != ""
+
+    @classmethod
+    def available_marks(cls) -> tuple[str, str]:
+        """Značky, kterými je možné políčko označit."""
+        return cls.__AVAILABLE_MARKS
 
     @staticmethod
     def check_mark(mark: str):
@@ -60,8 +68,22 @@ class Field:
         if len(mark) > 1:
             raise ValueError(f"Očekávaná délka je 0 nebo jeden znak: "
                              f"'{mark}'")
+        elif len(mark) == 1 and mark not in Field.available_marks():
+            raise ValueError(
+                f"Neočekávaná značka: '{mark}'. "
+                f"Zkus některou z: {Field.available_marks}")
 
 
+class FieldError(Exception):
+    """"""
+
+    def __init__(self, message: str, field: Field):
+        self._message = message
+        self._field = field
+
+    @property
+    def field(self) -> Field:
+        return self._field
 
 
 
