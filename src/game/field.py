@@ -75,14 +75,22 @@ class Field:
 
 
 class FieldError(Exception):
-    """"""
+    """Instance této třídy reprezentují chybu, která může nastat v momentě
+    práce s políčkem.
+
+    Kromě standardní výjimky je vybavena i referencí na políčko, v jehož
+    kontextu k chybě došlo."""
 
     def __init__(self, message: str, field: Field):
+        """Initor, který přijímá textovou zprávu o chybě a referenci na
+        políčko, v jehož kontextu k chybě došlo.
+        """
         self._message = message
         self._field = field
 
     @property
     def field(self) -> Field:
+        """Políčko, v jehož kontextu došlo k chybě."""
         return self._field
 
 
