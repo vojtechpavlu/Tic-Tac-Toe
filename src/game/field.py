@@ -86,7 +86,7 @@ class FieldError(Exception):
         políčko, v jehož kontextu k chybě došlo. Tento parametr je defaultně
         nastaven jako None (jde o nepovinnou složku).
         """
-        self._message = message
+        Exception.__init__(self, message)
         self._field = field
 
     @property
