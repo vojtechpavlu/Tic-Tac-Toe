@@ -42,16 +42,31 @@ class Game:
         """
         # Pokud je počet hráčů jiný než 2
         if len(self.players) != 2:
-            raise GameError(f"Počet hráčů musí být 2: {len(self.players)}")
+            raise GameError(f"Počet hráčů musí být 2: "
+                            f"{len(self.players)}", self)
 
         # Pokud je počet unikátních značek jiný, než počet hráčů
         elif len(set(self.player_marks)) != len(self.players):
             raise GameError(
-                f"Každý hráč musí mít unikátní značku: {self.player_marks}")
+                f"Každý hráč musí mít unikátní značku: "
+                f"{self.player_marks}", self)
 
 
 class GameError(Exception):
-    pass
+    """Výjimka reprezentující problém, ke kterému došlo během práce s instancí
+    třídy `Game`. Svého předka rozšiřuje o schopnost udržení reference na hru,
+    v jejímž kontextu došlo k chybě."""
+
+    def __init__(self, message: str, game: Game):
+        """"""
+        Exception.__init__(self, message)
+        self._game = game
+
+    @property
+    def game(self) -> Game:
+        """Instance hry (třídy `Game`), v jejímž kontextu došlo k chybě."""
+        return self._game
+
 
 
 
