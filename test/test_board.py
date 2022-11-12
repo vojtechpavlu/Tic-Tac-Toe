@@ -67,6 +67,13 @@ def test_field_mark_shorthand_nonexisting_field(board):
         board.mark(-5, -5, "X")
 
 
+def test_multiple_fields_with_same_coords(board):
+    collision_fields = [Field(1, 1), Field(1, 1), Field(1, 1)]
+
+    with pytest.raises(Exception) as be:
+        Board(collision_fields)
+
+
 
 
 
