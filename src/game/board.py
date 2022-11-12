@@ -16,11 +16,12 @@ class Board:
     """
 
     def __init__(self, fields: Iterable[Field]):
+        """Initor, který přijímá iterovatelnou sadu všech políček, která
+        mají danou hrací plochu reprezentovat.
+        """
         self.__fields = list(fields)
 
-        if len(set(self.__field_cords)) != self.size:
-            raise BoardError(f"Souřadnice jednotlivých políček musí být "
-                             f"unikátní: {self.__field_cords}", self)
+        self.__check_fields()
 
     @property
     def fields(self) -> tuple[Field]:
@@ -69,6 +70,14 @@ class Board:
         if not field:
             raise BoardError(f"Políčko [{x}, {y}] nebylo nalezeno!", self)
         field.mark = mark
+
+    def __check_fields(self):
+        """Metoda, která se stará o ověření správnosti hrací plochy.
+        Kontroluje se přitom, zda všechna políčka mají unikátní souřadnice.
+        """
+        if len(set(self.__field_cords)) != self.size:
+            raise BoardError(f"Souřadnice jednotlivých políček musí být "
+                             f"unikátní: {self.__field_cords}", self)
 
 
 def default_board() -> Board:
