@@ -5,12 +5,19 @@ from abc import ABC, abstractmethod
 
 
 class Player(ABC):
-    """"""
+    """Instance této abstraktní třídy umožňují sdružovat společný protokol
+    pro všechny typy hráčů - pro 'živé' i pro tzv. NPC.
 
+    Hráč je chápán jako entita schopná interagovat s hrou."""
+
+    # Značky, kterými mohou hráči označovat svá políčka. Pokud by se pokusil
+    # hráč používat jiných značek, je při iniciaci instance vyhozena výjimka
     __AVAILABLE_MARKS = ("X", "O")
 
     def __init__(self, player_name: str, mark: str):
-        """"""
+        """Initor, který přijímá jméno hráče a značku, kterou bude používat
+        pro označování svých políček.
+        """
         self.__player_name = player_name
         self.__mark = mark
 
@@ -18,6 +25,7 @@ class Player(ABC):
             raise PlayerError(
                 f"Neplatná značka hráče: '{mark}'. Použijte některou z "
                 f"povolených: {self.__AVAILABLE_MARKS}", self)
+
         elif not player_name:
             raise PlayerError(
                 f"Zadáno neplatné jméno hráče: {player_name}", self)
@@ -44,15 +52,20 @@ class Player(ABC):
 
 
 class PlayerError(Exception):
-    """"""
+    """Výjimka reprezentující chybu vzniklou v kontextu práce s instancí
+    třídy `Player`. Ta na rozdíl od svého předka udržuje referenci na hráče,
+    v jehož kontextu k chybě došlo. Díky tomu je možné lépe strojově reagovat
+    na možné problémy."""
 
     def __init__(self, message: str, player: Player):
-        """"""
+        """Initor, který přijímá kromě textové zprávy o chybě také referenci
+        na hráče, v jehož kontextu k chybě došlo.
+        """
         Exception.__init__(self, message)
         self._player = player
 
     @property
     def player(self) -> Player:
-        """"""
+        """Instance třídy `Player`, v jejímž kontextu došlo k chybě."""
         return self._player
 
