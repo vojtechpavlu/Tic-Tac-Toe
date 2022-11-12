@@ -52,6 +52,14 @@ def test_fields_with_and_without_mark(board):
     assert len(board.unmarked_fields) == 8
 
 
+def test_field_mark_shorthand(board):
+    assert not board.field(1, 1).is_marked
+
+    board.mark(1, 1, "X")
+
+    assert board.field(1, 1).is_marked
+
+
 
 
 
