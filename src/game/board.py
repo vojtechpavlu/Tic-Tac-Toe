@@ -43,6 +43,15 @@ class Board:
             if field.x == x and field.y == y:
                 return field
 
+    def mark(self, x: int, y: int, mark: str):
+        """Pokusí se vyhledat políčko dle dodaných souřadnic a označit ho.
+        Pokud takové políčko nebude nalezeno, je vyhozena výjimka.
+        """
+        field = self.field(x, y)
+        if not field:
+            raise Exception(f"Políčko [{x}, {y}] nebylo nalezeno!")
+        field.mark = mark
+
 
 
 
