@@ -1,5 +1,5 @@
 import pytest
-from src.game.field import Field
+from src.game.field import Field, FieldError
 
 # Definice souřadnic políček
 X = 1
@@ -42,11 +42,6 @@ def test_field_encapsulation_double_underscore(field):
         a = field.__y
 
 
-def test_multiple_characters():
-    with pytest.raises(ValueError) as ve:
-        field = Field(1, 1, "WRONG")
-
-
 def test_coords_change(field):
     field.x = 4
     field.y = 5
@@ -70,27 +65,34 @@ def test_field_available_marks():
 def test_wrong_mark(field):
     assert not field.is_marked
 
-    with pytest.raises(ValueError) as ve:
+    with pytest.raises(FieldError) as fe:
         field.mark = "W"
+
+
+def test_multiple_characters():
+    with pytest.raises(FieldError) as fe:
+        field = Field(1, 1, "WRONG")
 
 
 def test_overwrite(field):
     assert not field.is_marked
 
-    field.mark = "X"
+    field.mark = "X"  # Nastav validní značku
 
-    with pytest.raises(ValueError) as ve:
+    assert field.is_marked
+
+    with pytest.raises(FieldError) as fe:
         field.mark = "O"
 
 
 def test_mark_empty(field):
     assert not field.is_marked
 
-    field.mark = "X"
+    field.mark = "X"  # Nastav validní značku
 
     assert field.is_marked
 
-    with pytest.raises(ValueError) as ve:
+    with pytest.raises(FieldError) as fe:
         field.mark = ""
 
 
