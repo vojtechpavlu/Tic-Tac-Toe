@@ -5,6 +5,9 @@ Především pak obsahuje definici třídy, která hru reprezentuje (`Game`)."""
 from typing import Iterable
 
 from src.game.board import Board, default_board, BoardSnapshot
+from src.game.end_recognition import (EndRecognizer, Column, NoMoreMoves, Row,
+                                      LeftRightDiagonal, RightLeftDiagonal)
+from src.game.game_resul_exceptions import Draw, GameOver, Win
 from src.game.player import Player
 
 
@@ -23,10 +26,13 @@ class Game:
         """
         self.__players = list(players)
         self.__board = board
+        self.__end_recognizers: list[EndRecognizer] = []
 
         # Kontrola, že jsou dodaní hráči validní. Pokud by nebyli,
         # byla by vyhozena výjimka
         self.__check_players()
+
+        self.__set_up_end_recognizers()
 
     @property
     def players(self) -> tuple[Player]:
@@ -44,6 +50,11 @@ class Game:
         svých tahů."""
         return tuple([player.mark for player in self.players])
 
+    @property
+    def end_recognizers(self) -> tuple[EndRecognizer]:
+        """"""
+        return tuple(self.__end_recognizers)
+
     def run_game(self):
         """Jednoduchá implementace, která umožňuje teoreticky do nekonečna
         střídat tahy hráčů, případně je zopakovat v případě chyby.
@@ -55,6 +66,7 @@ class Game:
 
             # Hra dvou hráčů - střídají se (podobně jako sudá a lichá čísla)
             player = self.players[index % 2]
+            print(80*"-")
             print("Na tahu je hráč:", player.player_name)
 
             snapshot = self.__board.board_snapshot
@@ -67,6 +79,7 @@ class Game:
             # Zkontroluj, že uživatel zadal validní vstup. Pokud nezadal,
             # opakuj tuto iteraci znovu
             if not self.__check_player_input(snapshot, player_move):
+                print(f"Neplatný tah: '{player_move}'")
                 continue
 
             # Pokud uživatel zadal validní tah, proveď ho - označ políčko,
@@ -75,6 +88,21 @@ class Game:
                 if player_move == closure.character:
                     self.__board.mark(*closure.coords, player.mark)
                     break
+
+            # Pro každý rozpoznávač zkontroluj
+            for end_recognizer in self.end_recognizers:
+                try:
+                    end_recognizer.is_end(self.__board.board_snapshot)
+
+                # Pokud je daný stav remízou
+                except Draw:
+                    raise GameOver(
+                        f"Hra skončila remízou - {end_recognizer.description}")
+
+                # Pokud je daný stav výhrou jednoho z hráčů
+                except Win:
+                    raise GameOver(f"Hráč '{player.player_name}' vyhrál - "
+                                   f"{end_recognizer.description}")
 
             # Další tah
             index += 1
@@ -96,6 +124,23 @@ class Game:
                 f"Každý hráč musí mít unikátní značku: "
                 f"{self.player_marks}", self)
 
+    def __set_up_end_recognizers(self):
+        """Privátní metoda, která se stará o opatření služebníků, kteří
+        mají za cíl rozpoznávat konečné (výherní či remízové) rozložení
+        hrací plochy.
+        """
+        # Rozpoznávače spojení sloupců a řádků
+        for i in range(3):
+            self.__end_recognizers.append(Column(i))
+            self.__end_recognizers.append(Row(i))
+
+        # Rozpoznávače spojení diagonál
+        self.__end_recognizers.append(LeftRightDiagonal())
+        self.__end_recognizers.append(RightLeftDiagonal())
+
+        # Rozpoznávač, když neexistuje další tah (remíza)
+        self.__end_recognizers.append(NoMoreMoves())
+
     @staticmethod
     def __clear_player_input(player_input: str) -> str:
         """Očišťuje hráčův vstup o mezery a převádí ho na malá písmena."""
@@ -105,7 +150,7 @@ class Game:
     def __check_player_input(board_snapshot: BoardSnapshot,
                              player_input: str) -> bool:
         """Formální kontrola vstupu, zda-li je možné takový tah provést."""
-        if player_input not in board_snapshot:
+        if player_input not in board_snapshot.valid_moves:
             return False
         return True
 

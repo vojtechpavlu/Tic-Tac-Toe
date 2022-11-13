@@ -98,6 +98,8 @@ class BoardSnapshot:
     Instance této třídy tímto obalují hrací plochu a vystavují pouze zástupné
     objekty či v kontextu hry nevýznamné kopie objektů."""
 
+    __SUBSTITUTE_CHARACTERS = tuple("123456789ABCDEF")
+
     def __init__(self, board: Board):
         """Initor, který přijímá v parametru referenci na hrací plochu."""
         self.__board = board.copy
@@ -126,7 +128,7 @@ class BoardSnapshot:
         reprezentovat políčko pomocí zástupného znaku.
         """
         closures = []
-        substitutes = list(range(1, 10))
+        substitutes = self.substitute_characters
         for y in range(3):
             for x in range(3):
                 f = self.__board.field(x, y)
@@ -154,6 +156,12 @@ class BoardSnapshot:
         tah."""
         return tuple([fc.substitute_character for fc in self.field_closures
                       if fc.has_substitute_character])
+
+    @classmethod
+    def substitute_characters(cls) -> tuple[str]:
+        """Vrací privátní třídní ntici reprezentující zástupné znaky pro
+        specifikaci tahu hráčem."""
+        return cls.__SUBSTITUTE_CHARACTERS
 
 
 def default_board() -> Board:

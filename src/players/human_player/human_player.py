@@ -23,7 +23,7 @@ class HumanPlayer(Player):
         """
         # Vypíše ukázku stavu hry a jeho možné validní tahy
         print(board.stringify, "\n")
-        print(valid_moves, "\n")
+        print("Možné tahy:", valid_moves, "\n")
 
         # Dotázání se na tah uživatele a jeho úvodní očištění od mezer
         # na počátku a na konci vstupního řetězce
