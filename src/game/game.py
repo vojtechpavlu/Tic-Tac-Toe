@@ -5,8 +5,8 @@ Především pak obsahuje definici třídy, která hru reprezentuje (`Game`)."""
 from typing import Iterable
 
 from src.game.board import Board, default_board, BoardSnapshot
-from src.game.end_recognition import EndRecognizer, Column, NoMoreMoves, Row, \
-    LeftRightDiagonal, RightLeftDiagonal
+from src.game.end_recognition import (EndRecognizer, Column, NoMoreMoves, Row,
+                                      LeftRightDiagonal, RightLeftDiagonal)
 from src.game.game_resul_exceptions import Draw, GameOver, Win
 from src.game.player import Player
 
@@ -89,12 +89,17 @@ class Game:
                     self.__board.mark(*closure.coords, player.mark)
                     break
 
+            # Pro každý rozpoznávač zkontroluj
             for end_recognizer in self.end_recognizers:
                 try:
                     end_recognizer.is_end(self.__board.board_snapshot)
+
+                # Pokud je daný stav remízou
                 except Draw:
                     raise GameOver(
                         f"Hra skončila remízou - {end_recognizer.description}")
+
+                # Pokud je daný stav výhrou jednoho z hráčů
                 except Win:
                     raise GameOver(f"Hráč '{player.player_name}' vyhrál - "
                                    f"{end_recognizer.description}")
@@ -120,14 +125,20 @@ class Game:
                 f"{self.player_marks}", self)
 
     def __set_up_end_recognizers(self):
-        """"""
+        """Privátní metoda, která se stará o opatření služebníků, kteří
+        mají za cíl rozpoznávat konečné (výherní či remízové) rozložení
+        hrací plochy.
+        """
+        # Rozpoznávače spojení sloupců a řádků
         for i in range(3):
             self.__end_recognizers.append(Column(i))
             self.__end_recognizers.append(Row(i))
 
+        # Rozpoznávače spojení diagonál
         self.__end_recognizers.append(LeftRightDiagonal())
         self.__end_recognizers.append(RightLeftDiagonal())
 
+        # Rozpoznávač, když neexistuje další tah (remíza)
         self.__end_recognizers.append(NoMoreMoves())
 
     @staticmethod
