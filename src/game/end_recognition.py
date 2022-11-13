@@ -139,3 +139,45 @@ class NoMoreMoves(EndRecognizer):
         """
         if len(board_snapshot.valid_moves) == 0:
             raise Draw()
+
+
+class RightLeftDiagonal(EndRecognizer):
+    """"""
+
+    def __init__(self):
+        """"""
+        EndRecognizer.__init__(
+            self, "Hráč spojil políčka na pravolevé diagonále")
+
+    def is_end(self, board_snapshot: BoardSnapshot):
+        """"""
+        closures = board_snapshot.field_closures
+        chars = []
+
+        for i in range(3):
+            chars.append(self.find_closure(i, i, closures).character)
+
+        if len(set(chars)) == 1:
+            raise Win()
+
+
+class LeftRightDiagonal(EndRecognizer):
+    """"""
+
+    def __init__(self):
+        """"""
+        EndRecognizer.__init__(
+            self, "Hráč spojil políčka na levopravé diagonále")
+
+    def is_end(self, board_snapshot: BoardSnapshot):
+        """"""
+        closures = board_snapshot.field_closures
+        chars = []
+
+        for i in range(3):
+            chars.append(self.find_closure(i, 2 - i, closures).character)
+
+        if len(set(chars)) == 1:
+            raise Win()
+
+
