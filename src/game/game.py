@@ -5,6 +5,8 @@ Především pak obsahuje definici třídy, která hru reprezentuje (`Game`)."""
 from typing import Iterable
 
 from src.game.board import Board, default_board, BoardSnapshot
+from src.game.end_recognition import EndRecognizer, Column, NoMoreMoves, Row
+from src.game.game_resul_exceptions import Draw, GameOver, Win
 from src.game.player import Player
 
 
@@ -23,10 +25,13 @@ class Game:
         """
         self.__players = list(players)
         self.__board = board
+        self.__end_recognizers: list[EndRecognizer] = []
 
         # Kontrola, že jsou dodaní hráči validní. Pokud by nebyli,
         # byla by vyhozena výjimka
         self.__check_players()
+
+        self.__set_up_end_recognizers()
 
     @property
     def players(self) -> tuple[Player]:
@@ -43,6 +48,11 @@ class Game:
         """Vrací ntici všech značek, které hráči používají k označování políček
         svých tahů."""
         return tuple([player.mark for player in self.players])
+
+    @property
+    def end_recognizers(self) -> tuple[EndRecognizer]:
+        """"""
+        return tuple(self.__end_recognizers)
 
     def run_game(self):
         """Jednoduchá implementace, která umožňuje teoreticky do nekonečna
@@ -95,6 +105,14 @@ class Game:
             raise GameError(
                 f"Každý hráč musí mít unikátní značku: "
                 f"{self.player_marks}", self)
+
+    def __set_up_end_recognizers(self):
+        """"""
+        for i in range(3):
+            self.__end_recognizers.append(Column(i))
+            self.__end_recognizers.append(Row(i))
+
+        self.__end_recognizers.append(NoMoreMoves())
 
     @staticmethod
     def __clear_player_input(player_input: str) -> str:
