@@ -1,4 +1,6 @@
-""""""
+"""Tento modul obsahuje všechny prostředky pro management životního cyklu hry.
+
+Především pak obsahuje definici třídy, která hru reprezentuje (`Game`)."""
 
 from typing import Iterable
 
@@ -43,6 +45,9 @@ class Game:
         return tuple([player.mark for player in self.players])
 
     def run_game(self):
+        """Jednoduchá implementace, která umožňuje teoreticky do nekonečna
+        střídat tahy hráčů, případně je zopakovat v případě chyby.
+        """
         index = 0
 
         # Nekonečný cyklus
@@ -93,13 +98,13 @@ class Game:
 
     @staticmethod
     def __clear_player_input(player_input: str) -> str:
-        """"""
+        """Očišťuje hráčův vstup o mezery a převádí ho na malá písmena."""
         return player_input.strip().lower()
 
     @staticmethod
     def __check_player_input(board_snapshot: BoardSnapshot,
                              player_input: str) -> bool:
-        """"""
+        """Formální kontrola vstupu, zda-li je možné takový tah provést."""
         if player_input not in board_snapshot:
             return False
         return True
