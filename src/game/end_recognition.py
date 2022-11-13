@@ -142,15 +142,23 @@ class NoMoreMoves(EndRecognizer):
 
 
 class RightLeftDiagonal(EndRecognizer):
-    """"""
+    """Instance této třídy poskytují službu rozpoznání zakončení hry spojením
+    diagonálních políček hrací plochy jedním hráčem. Takovýto tah ústí ve
+    výhru."""
 
     def __init__(self):
-        """"""
+        """Bezparametrický initor, který iniciuje předka."""
         EndRecognizer.__init__(
             self, "Hráč spojil políčka na pravolevé diagonále")
 
     def is_end(self, board_snapshot: BoardSnapshot):
-        """"""
+        """Metoda, která poskytuje rozhodnutí, zda-li je hra zakončena
+        spojením diagonálních políček z levého horního rohu hrací plochy
+        k tomu pravému dolnímu.
+
+        Pokud jsou tato políčka spojena, resp. označena jedním hráčem, pak
+        je vyhozena výjimka reprezentující výhru.
+        """
         closures = board_snapshot.field_closures
         chars = []
 
@@ -162,15 +170,23 @@ class RightLeftDiagonal(EndRecognizer):
 
 
 class LeftRightDiagonal(EndRecognizer):
-    """"""
+    """Instance této třídy poskytují službu rozpoznání zakončení hry spojením
+    diagonálních políček hrací plochy jedním hráčem. Takovýto tah ústí ve
+    výhru."""
 
     def __init__(self):
-        """"""
+        """Bezparametrický initor, který iniciuje předka."""
         EndRecognizer.__init__(
             self, "Hráč spojil políčka na levopravé diagonále")
 
     def is_end(self, board_snapshot: BoardSnapshot):
-        """"""
+        """Metoda, která poskytuje rozhodnutí, zda-li je hra zakončena
+        spojením diagonálních políček z pravého horního rohu hrací plochy
+        k tomu levému dolnímu.
+
+        Pokud jsou tato políčka spojena, resp. označena jedním hráčem, pak
+        je vyhozena výjimka reprezentující výhru.
+        """
         closures = board_snapshot.field_closures
         chars = []
 
