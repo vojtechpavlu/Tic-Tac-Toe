@@ -44,15 +44,34 @@ class Game:
 
     def run_game(self):
         index = 0
-        while True:
-            snapshot = self.__board.board_snapshot
-            player = self.players[index % 2]
-            print("Hraje hráč:", player.player_name)
-            response = player.move(snapshot, snapshot.valid_moves)
 
+        # Nekonečný cyklus
+        while True:
+
+            # Hra dvou hráčů - střídají se (podobně jako sudá a lichá čísla)
+            player = self.players[index % 2]
+            print("Na tahu je hráč:", player.player_name)
+
+            snapshot = self.__board.board_snapshot
+
+            # Vyzvání hráče ke svému tahu, získání odpovědi a očištění
+            # této odpovědi
+            player_move = player.move(snapshot, snapshot.valid_moves)
+            player_move = self.__clear_player_input(player_move)
+
+            # Zkontroluj, že uživatel zadal validní vstup. Pokud nezadal,
+            # opakuj tuto iteraci znovu
+            if not self.__check_player_input(snapshot, player_move):
+                continue
+
+            # Pokud uživatel zadal validní tah, proveď ho - označ políčko,
+            # které specifikoval uživatel
             for closure in snapshot.field_closures:
-                if response == closure.character:
+                if player_move == closure.character:
                     self.__board.mark(*closure.coords, player.mark)
+                    break
+
+            # Další tah
             index += 1
 
     def __check_players(self):
