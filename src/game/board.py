@@ -91,30 +91,40 @@ class Board:
 
 
 class BoardSnapshot:
-    """"""
+    """Abstrakce nad aktuálním stavem hrací plochy. Tento snímek okamžiku hry
+    umožňuje skrýt vnitřní stav a vystavit pouze neměnné podstatné aspekty
+    a tím zamezit zneužití s cílem podávdět.
+
+    Instance této třídy tímto obalují hrací plochu a vystavují pouze zástupné
+    objekty či v kontextu hry nevýznamné kopie objektů."""
 
     def __init__(self, board: Board):
-        """"""
+        """Initor, který přijímá v parametru referenci na hrací plochu."""
         self.__board = board.copy
 
     @property
     def fields(self) -> tuple[Field]:
-        """"""
+        """Ntici políček, která tvoří hrací plochu."""
         return self.__board.fields
 
     @property
     def empty_fields(self) -> tuple[Field]:
-        """"""
+        """Ntice políček, která nebyla doposud označena, tedy na kterých
+        ještě žádný z hráčů neprovedl svůj tah.
+        """
         return tuple([f for f in self.__board.fields if not f.is_marked])
 
     @property
     def played_fields(self) -> tuple[Field]:
-        """"""
+        """Ntice políček, nad kterými již některý z hráčů svůj tah provedl.
+        """
         return tuple([f for f in self.__board.fields if f.is_marked])
 
     @property
     def field_closures(self) -> tuple[FieldClosure]:
-        """"""
+        """Ntice obálek všech políček. Každá tato obálka pak umožňuje
+        reprezentovat políčko pomocí zástupného znaku.
+        """
         closures = []
         substitutes = list(range(1, 10))
         for y in range(3):
@@ -125,9 +135,11 @@ class BoardSnapshot:
         return tuple(closures)
 
     @property
-    def valid_moves(self) -> tuple[FieldClosure]:
-        """"""
-        return tuple([fc for fc in self.field_closures
+    def valid_moves(self) -> tuple[str]:
+        """Ntice všech zástupných znaků reprezentujících jednoznačné reference
+        na políčka hrací desky, která lze označit, resp. na kterých lze provést
+        tah."""
+        return tuple([fc.substitute_character for fc in self.field_closures
                       if fc.has_substitute_character])
 
 
