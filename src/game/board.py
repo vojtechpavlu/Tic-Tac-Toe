@@ -50,17 +50,9 @@ class Board:
         return tuple([field.xy for field in self.fields])
 
     @property
-    def board_state(self) -> tuple[tuple[str]]:
+    def board_snapshot(self) -> "BoardSnapshot":
         """"""
-        lines = []
-        substitutes = list(range(1, 10))
-        for y in range(3):
-            line = []
-            for x in range(3):
-                f = self.field(x, y)
-                line.append(f.mark if f.is_marked else str(substitutes.pop(0)))
-            lines.append(tuple(line))
-        return tuple(lines)
+        return BoardSnapshot(self)
 
     @property
     def copy(self) -> "Board":
@@ -170,7 +162,3 @@ class BoardError(Exception):
     def board(self) -> Board:
         """Hrací plocha, v jejímž kontextu došlo k chybě."""
         return self._board
-
-
-
-
