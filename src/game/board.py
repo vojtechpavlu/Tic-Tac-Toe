@@ -51,7 +51,7 @@ class Board:
 
     @property
     def board_snapshot(self) -> "BoardSnapshot":
-        """"""
+        """Vrací snímek aktuálního rozložení hry."""
         return BoardSnapshot(self)
 
     @property
