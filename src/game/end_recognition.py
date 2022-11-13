@@ -6,13 +6,21 @@ from typing import Iterable
 
 from src.game.board import BoardSnapshot
 from src.game.field import FieldClosure
+from src.game.game_resul_exceptions import Win, Draw
 
 
 class EndRecognizer(ABC):
     """"""
 
+    def __init__(self, description: str):
+        self._desc = description
+
+    @property
+    def description(self) -> str:
+        return self._desc
+
     @abstractmethod
-    def is_end(self, board_snapshot: BoardSnapshot) -> bool:
+    def is_end(self, board_snapshot: BoardSnapshot):
         """"""
 
     @staticmethod
@@ -30,6 +38,8 @@ class Column(EndRecognizer):
 
     def __init__(self, column_number: int):
         """"""
+        EndRecognizer.__init__(
+            self, f"Hráč spojil políčka v {column_number + 1}. sloupci.")
         self._column_number = column_number
 
     @property
@@ -37,7 +47,7 @@ class Column(EndRecognizer):
         """"""
         return self._column_number
 
-    def is_end(self, board_snapshot: BoardSnapshot) -> bool:
+    def is_end(self, board_snapshot: BoardSnapshot):
         """"""
         closures = board_snapshot.field_closures
         characters = []
@@ -48,8 +58,9 @@ class Column(EndRecognizer):
 
         for character in characters:
             if character != characters[0]:
-                return False
-        return True
+                break
+        else:
+            raise Win()
 
 
 class Row(EndRecognizer):
@@ -57,6 +68,8 @@ class Row(EndRecognizer):
 
     def __init__(self, row_number: int):
         """"""
+        EndRecognizer.__init__(
+            self, f"Hráč spojil políčka v {row_number + 1}. řádku.")
         self._row_number = row_number
 
     @property
@@ -64,7 +77,7 @@ class Row(EndRecognizer):
         """"""
         return self._row_number
 
-    def is_end(self, board_snapshot: BoardSnapshot) -> bool:
+    def is_end(self, board_snapshot: BoardSnapshot):
         """"""
         closures = board_snapshot.field_closures
         characters = []
@@ -75,16 +88,21 @@ class Row(EndRecognizer):
 
         for character in characters:
             if character != characters[0]:
-                return False
-        return True
+                break
+        else:
+            raise Win()
 
 
 class NoMoreMoves(EndRecognizer):
     """"""
 
-    def is_end(self, board_snapshot: BoardSnapshot) -> bool:
+    def __init__(self):
+        EndRecognizer.__init__(self, "Již není žádný další možný tah.")
+
+    def is_end(self, board_snapshot: BoardSnapshot):
         """"""
-        return len(board_snapshot.valid_moves) == 0
+        if len(board_snapshot.valid_moves) == 0:
+            raise Draw()
 
 
 
