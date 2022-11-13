@@ -135,6 +135,19 @@ class BoardSnapshot:
         return tuple(closures)
 
     @property
+    def stringify(self) -> str:
+        """Převede aktuální rozložení hrací plochy na textovou reprezentaci.
+        """
+        lines = []
+        closures = self.field_closures
+        for y in range(3):
+            chars = []
+            for x in range(3):
+                chars.append(closures[3 * y + x].character)
+            lines.append(" | ".join(chars))
+        return f"\n{'-'*9}\n".join(lines)
+
+    @property
     def valid_moves(self) -> tuple[str]:
         """Ntice všech zástupných znaků reprezentujících jednoznačné reference
         na políčka hrací desky, která lze označit, resp. na kterých lze provést
