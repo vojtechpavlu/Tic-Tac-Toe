@@ -5,7 +5,7 @@ dojde-li k problému v rámci hrací plochy (`BoardError`).
 """
 
 from typing import Iterable
-from src.game.field import Field
+from src.game.field import Field, FieldClosure
 
 
 class Board:
@@ -49,6 +49,16 @@ class Board:
         """
         return tuple([field.xy for field in self.fields])
 
+    @property
+    def board_snapshot(self) -> "BoardSnapshot":
+        """"""
+        return BoardSnapshot(self)
+
+    @property
+    def copy(self) -> "Board":
+        """Vrací hlubokou kopii tohoto objektu."""
+        return Board([f.copy for f in self.fields])
+
     def has_field(self, x: int, y: int) -> bool:
         """Vrátí informaci o tom, zda-li je na hrací ploše políčko přítomné.
         """
@@ -78,6 +88,47 @@ class Board:
         if len(set(self.__field_cords)) != self.size:
             raise BoardError(f"Souřadnice jednotlivých políček musí být "
                              f"unikátní: {self.__field_cords}", self)
+
+
+class BoardSnapshot:
+    """"""
+
+    def __init__(self, board: Board):
+        """"""
+        self.__board = board.copy
+
+    @property
+    def fields(self) -> tuple[Field]:
+        """"""
+        return self.__board.fields
+
+    @property
+    def empty_fields(self) -> tuple[Field]:
+        """"""
+        return tuple([f for f in self.__board.fields if not f.is_marked])
+
+    @property
+    def played_fields(self) -> tuple[Field]:
+        """"""
+        return tuple([f for f in self.__board.fields if f.is_marked])
+
+    @property
+    def field_closures(self) -> tuple[FieldClosure]:
+        """"""
+        closures = []
+        substitutes = list(range(1, 10))
+        for y in range(3):
+            for x in range(3):
+                f = self.__board.field(x, y)
+                mark = str(substitutes.pop(0)) if not f.is_marked else None
+                closures.append(FieldClosure(f, mark))
+        return tuple(closures)
+
+    @property
+    def valid_moves(self) -> tuple[FieldClosure]:
+        """"""
+        return tuple([fc for fc in self.field_closures
+                      if fc.has_substitute_character])
 
 
 def default_board() -> Board:
@@ -111,7 +162,3 @@ class BoardError(Exception):
     def board(self) -> Board:
         """Hrací plocha, v jejímž kontextu došlo k chybě."""
         return self._board
-
-
-
-

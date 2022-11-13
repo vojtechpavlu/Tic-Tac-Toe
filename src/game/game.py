@@ -68,6 +68,3 @@ class GameError(Exception):
         return self._game
 
 
-
-
-

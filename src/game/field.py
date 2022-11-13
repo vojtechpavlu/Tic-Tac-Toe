@@ -76,6 +76,11 @@ class Field:
         """Vrací, zda-li je políčko označeno či nikoliv."""
         return self.mark != ""
 
+    @property
+    def copy(self) -> "Field":
+        """Vrací kopii tohoto objektu."""
+        return Field(self.x, self.y, self.mark)
+
     @classmethod
     def available_marks(cls) -> tuple[str, str]:
         """Značky, kterými je možné políčko označit."""
@@ -92,6 +97,31 @@ class Field:
             raise FieldError(
                 f"Neočekávaná značka: '{mark}'. "
                 f"Zkus některou z: {Field.available_marks}")
+
+
+class FieldClosure:
+    """"""
+
+    def __init__(self, field: Field, substitute: str = None):
+        """"""
+        self.__field = field
+        self.__substitute = substitute
+
+    @property
+    def field(self) -> Field:
+        return self.__field.copy
+
+    @property
+    def substitute_character(self) -> str:
+        return self.__substitute
+
+    @property
+    def coords(self) -> tuple[int, int]:
+        return self.__field.xy
+
+    @property
+    def has_substitute_character(self) -> bool:
+        return self.__substitute is not None
 
 
 class FieldError(Exception):
