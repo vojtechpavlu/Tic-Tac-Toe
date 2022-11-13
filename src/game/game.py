@@ -42,6 +42,19 @@ class Game:
         svých tahů."""
         return tuple([player.mark for player in self.players])
 
+    def run_game(self):
+        index = 0
+        while True:
+            snapshot = self.__board.board_snapshot
+            player = self.players[index % 2]
+            print("Hraje hráč:", player.player_name)
+            response = player.move(snapshot, snapshot.valid_moves)
+
+            for closure in snapshot.field_closures:
+                if response == closure.character:
+                    self.__board.mark(*closure.coords, player.mark)
+            index += 1
+
     def __check_players(self):
         """Kontrola validity hráčů. Kontroluje se následující:
 
