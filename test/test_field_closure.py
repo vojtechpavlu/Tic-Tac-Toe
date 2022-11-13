@@ -57,4 +57,18 @@ def test_closure_check_with_both(field):
         FieldClosure(field, "2")  # Má značku a zástupný symbol
 
 
+def test_closure_check_character_with_mark(field):
+    assert not field.is_marked
+    field.mark = "X"
+    closure = FieldClosure(field)
+    assert closure.character == "X"
+
+
+def test_closure_check_character_with_substitute_char(field):
+    assert not field.is_marked
+    closure = FieldClosure(field, "2")
+    assert closure.character == "2"
+
+
+
 
