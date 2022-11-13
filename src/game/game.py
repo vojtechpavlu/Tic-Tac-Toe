@@ -7,11 +7,18 @@ from src.game.player import Player
 
 
 class Game:
-    """"""
+    """Reprezentace hry dvou hráčů."""
 
     def __init__(self, players: Iterable[Player],
                  board: Board = default_board()):
-        """"""
+        """Initor, který přijímá sadu hráčů a hrací plochu, na které má hra
+        probíhat.
+
+        Hra předpokládá několik vlastností, které hráči musí splnit. V první
+        řadě musí být právě 2 hráči, dále pak musí mít každý přidělen unikátní
+        znak, kterým označují políčka svých tahů. Nejsou-li tyto podmínky
+        splěny, je vyhozena výjimka.
+        """
         self.__players = list(players)
         self.__board = board
 
@@ -21,17 +28,18 @@ class Game:
 
     @property
     def players(self) -> tuple[Player]:
-        """"""
+        """Vrací ntici všech hráčů, kteří ve hře jsou."""
         return tuple(self.__players)
 
     @property
     def player_names(self) -> tuple[str]:
-        """"""
+        """Vrací ntici jmen všech hrářů."""
         return tuple([player.player_name for player in self.players])
 
     @property
     def player_marks(self) -> tuple[str]:
-        """"""
+        """Vrací ntici všech značek, které hráči používají k označování políček
+        svých tahů."""
         return tuple([player.mark for player in self.players])
 
     def __check_players(self):
@@ -58,7 +66,8 @@ class GameError(Exception):
     v jejímž kontextu došlo k chybě."""
 
     def __init__(self, message: str, game: Game):
-        """"""
+        """Initor, který přijímá textovou zprávu o chybě a referenci na objekt
+        hry, v jejímž kontextu došlo k chybě."""
         Exception.__init__(self, message)
         self._game = game
 
