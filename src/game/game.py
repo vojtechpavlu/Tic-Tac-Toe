@@ -65,6 +65,7 @@ class Game:
 
             # Hra dvou hráčů - střídají se (podobně jako sudá a lichá čísla)
             player = self.players[index % 2]
+            print(80*"-")
             print("Na tahu je hráč:", player.player_name)
 
             snapshot = self.__board.board_snapshot
@@ -77,6 +78,7 @@ class Game:
             # Zkontroluj, že uživatel zadal validní vstup. Pokud nezadal,
             # opakuj tuto iteraci znovu
             if not self.__check_player_input(snapshot, player_move):
+                print(f"Neplatný tah: '{player_move}'")
                 continue
 
             # Pokud uživatel zadal validní tah, proveď ho - označ políčko,
@@ -85,6 +87,16 @@ class Game:
                 if player_move == closure.character:
                     self.__board.mark(*closure.coords, player.mark)
                     break
+
+            for end_recognizer in self.end_recognizers:
+                try:
+                    end_recognizer.is_end(self.__board.board_snapshot)
+                except Draw:
+                    raise GameOver(
+                        f"Hra skončila remízou - {end_recognizer.description}")
+                except Win:
+                    raise GameOver(f"Hráč '{player.player_name}' vyhrál - "
+                                   f"{end_recognizer.description}")
 
             # Další tah
             index += 1
@@ -123,7 +135,7 @@ class Game:
     def __check_player_input(board_snapshot: BoardSnapshot,
                              player_input: str) -> bool:
         """Formální kontrola vstupu, zda-li je možné takový tah provést."""
-        if player_input not in board_snapshot:
+        if player_input not in board_snapshot.valid_moves:
             return False
         return True
 
