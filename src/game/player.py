@@ -6,6 +6,7 @@ slouží jako společný předek pro všechny typy hráčů - živých i NPC.
 
 
 from abc import ABC, abstractmethod
+from src.game.board import BoardSnapshot
 
 
 class Player(ABC):
@@ -45,7 +46,7 @@ class Player(ABC):
         return self.__mark
 
     @abstractmethod
-    def move(self) -> str:
+    def move(self, board: BoardSnapshot, valid_moves: tuple[str]) -> str:
         """Abstraktní metoda reprezentující tah hráče. Tah hráč zadává coby
         textovou reprezentaci."""
 
