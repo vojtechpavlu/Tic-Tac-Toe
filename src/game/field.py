@@ -119,6 +119,8 @@ class FieldClosure:
         self.__field = field
         self.__substitute = substitute
 
+        self.__check_character()
+
     @property
     def substitute_character(self) -> str:
         """Zástupný znak, pomocí kterého se lze na dané políčko odkázat."""
@@ -134,6 +136,19 @@ class FieldClosure:
         """Zda-li má políčko zástupný znak; jinými slovy zda-li lze políčko
         označit a tím provést svůj tah."""
         return self.__substitute is not None
+
+    def __check_character(self):
+        """Kontrola, že má obálka správně stanoven znak. Políčko musí být
+        označeno hráčem (tahem), nebo musí mít obálka jednoznačné označení.
+        Musí vždy mít právě jedno."""
+        if self.mark and self.has_substitute_character:
+            raise FieldError(
+                f"Políčko nemůže být označeno a dále vystupovat jako políčko "
+                f"označitelné", self.__field)
+        if not self.mark and not self.has_substitute_character:
+            raise FieldError(
+                f"Políčko musí být již označené nebo musí mít zástupný znak",
+                self.__field)
 
 
 class FieldError(Exception):
