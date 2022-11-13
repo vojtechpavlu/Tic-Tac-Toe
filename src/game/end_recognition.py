@@ -1,4 +1,5 @@
-""""""
+"""Tento modul obsahuje definice rozpoznavatelů konce hry.
+"""
 
 
 from abc import ABC, abstractmethod
@@ -10,22 +11,34 @@ from src.game.game_resul_exceptions import Win, Draw
 
 
 class EndRecognizer(ABC):
-    """"""
+    """Obecný abstraktní předek všech zakončení hry.
+
+    Stanovuje společný protokol pro všechny rozpoznavatele, především pak
+    metodou `is_end(BoardSnapshot)`, pomocí které lze rozpoznat, zda-li je
+    aktuální rozložení herní plochy cílové či nikoliv.
+    """
 
     def __init__(self, description: str):
+        """Initor, který přijímá textový popis zakončení."""
         self._desc = description
 
     @property
     def description(self) -> str:
+        """Popis zakončení coby textový řetězec."""
         return self._desc
 
     @abstractmethod
     def is_end(self, board_snapshot: BoardSnapshot):
-        """"""
+        """Abstraktní metoda, která umožňuje rozpoznat zakončení. Typicky,
+        jde-li o koncovou kombinaci označených políček, vyhazuje příslušnou
+        výjimku, konkrétně `Win` nebo `Draw`.
+        """
 
     @staticmethod
     def find_closure(x: int, y: int, closures: Iterable[FieldClosure]):
-        """"""
+        """Pomocná statická metoda pro vyhledávání obálky políčka podle
+        dodaných souřadnic políčka.
+        """
         for closure in closures:
             if closure.coords == (x, y):
                 return closure
@@ -34,51 +47,70 @@ class EndRecognizer(ABC):
 
 
 class Column(EndRecognizer):
-    """"""
+    """Instance této třídy poskytují službu vyhledávání spojení políček ve
+    sloupci dle dodaného snímku rozložení hrací plochy.
+    """
 
     def __init__(self, column_number: int):
-        """"""
+        """Initor, který přijímá číslo sloupce, který má být prohledáván.
+        Z podstaty hry se očekává počítání od nuly.
+        """
         EndRecognizer.__init__(
             self, f"Hráč spojil políčka v {column_number + 1}. sloupci.")
         self._column_number = column_number
 
     @property
     def column_number(self) -> int:
-        """"""
+        """Číslo prohledávaného sloupce."""
         return self._column_number
 
     def is_end(self, board_snapshot: BoardSnapshot):
-        """"""
+        """Metoda poskytující službu prohledání snímku rozložení políček hry
+        s cílem zjistit, zda-li nebyl spojen některým z hráčů celý sloupec.
+
+        Pokud k takové situaci došlo, znamená to výhru daného hráče a je tedy
+        vyhozena výjimka `Win`.
+        """
         closures = board_snapshot.field_closures
         characters = []
 
+        # Pro všechny řádky ve sloupečku si zaznamenej znak, kterým se obálka
+        # políčka prezentuje
         for y in range(3):
             characters.append(
                 self.find_closure(self.column_number, y, closures).character)
 
-        for character in characters:
-            if character != characters[0]:
-                break
-        else:
+        # Pokud je mezi znaky jen jediný společný (unikátní) znak, znamená
+        # to, že je sloupec spojen
+        if len(set(characters)) == 1:
             raise Win()
 
 
 class Row(EndRecognizer):
-    """"""
+    """Instance této třídy poskytují službu vyhledávání spojení políček v
+    řádku dle dodaného snímku rozložení hrací plochy.
+    """
 
     def __init__(self, row_number: int):
-        """"""
+        """Initor, který přijímá číslo řádku, který má být prohledáván.
+        Z podstaty hry se očekává počítání od nuly.
+        """
         EndRecognizer.__init__(
             self, f"Hráč spojil políčka v {row_number + 1}. řádku.")
         self._row_number = row_number
 
     @property
     def row_number(self) -> int:
-        """"""
+        """Prohledávaný řádek"""
         return self._row_number
 
     def is_end(self, board_snapshot: BoardSnapshot):
-        """"""
+        """Metoda poskytující službu prohledání snímku rozložení políček hry
+        s cílem zjistit, zda-li nebyl spojen některým z hráčů celý řádek.
+
+        Pokud k takové situaci došlo, znamená to výhru daného hráče a je tedy
+        vyhozena výjimka `Win`.
+        """
         closures = board_snapshot.field_closures
         characters = []
 
@@ -86,36 +118,24 @@ class Row(EndRecognizer):
             characters.append(
                 self.find_closure(x, self.row_number, closures).character)
 
-        for character in characters:
-            if character != characters[0]:
-                break
-        else:
+        # Pokud je mezi znaky jen jediný společný (unikátní) znak, znamená
+        # to, že je řádek spojen
+        if len(set(characters)) == 1:
             raise Win()
 
 
 class NoMoreMoves(EndRecognizer):
-    """"""
+    """Instance této třídy mají za cíl rozpoznávat, že v hracím poli neexistuje
+    již žádný další možný tah. Takový stav pak typicky znamená remízu."""
 
     def __init__(self):
+        """Bezparametrický initor, který iniciuje předka."""
         EndRecognizer.__init__(self, "Již není žádný další možný tah.")
 
     def is_end(self, board_snapshot: BoardSnapshot):
-        """"""
+        """Metoda umožňující kontrolu, že hrací plocha již nemá žádných
+        dalších možných tahů. Pokud k této situaci skutečně nastane, znamená
+        to remízu.
+        """
         if len(board_snapshot.valid_moves) == 0:
             raise Draw()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
