@@ -2,7 +2,7 @@
 
 from typing import Iterable
 
-from src.game.board import Board, default_board
+from src.game.board import Board, default_board, BoardSnapshot
 from src.game.player import Player
 
 
@@ -71,6 +71,19 @@ class Game:
             raise GameError(
                 f"Každý hráč musí mít unikátní značku: "
                 f"{self.player_marks}", self)
+
+    @staticmethod
+    def __clear_player_input(player_input: str) -> str:
+        """"""
+        return player_input.strip().lower()
+
+    @staticmethod
+    def __check_player_input(board_snapshot: BoardSnapshot,
+                             player_input: str) -> bool:
+        """"""
+        if player_input not in board_snapshot:
+            return False
+        return True
 
 
 class GameError(Exception):
