@@ -127,6 +127,21 @@ class FieldClosure:
         return self.__substitute
 
     @property
+    def mark(self) -> str:
+        """Značka na políčku. Pokud na tomto políčku ještě nebylo taženo,
+        je vrácen prázdný textový řetězec."""
+        return self.__field.mark
+
+    @property
+    def character(self) -> str:
+        """Textová reprezentace obálky políčka. Konkrétně jde o znak, který
+        políčko vizuálně symbolizuje.
+
+        Bylo-li již na políčku taženo, pak vrátí značku obalovaného políčka.
+        V opačném případě vrací zástupný znak políčka."""
+        return self.mark or self.substitute_character
+
+    @property
     def coords(self) -> tuple[int, int]:
         """Souřadnice políčka, které je touto instancí obaleno."""
         return self.__field.xy
