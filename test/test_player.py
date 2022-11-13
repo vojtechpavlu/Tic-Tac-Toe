@@ -1,12 +1,7 @@
 import pytest
 
-from src.game.player import Player, PlayerError
-
-
-class DummyPlayer(Player):
-
-    def move(self) -> str:
-        return "test_move"
+from src.game.player import PlayerError
+from test.dummy_player import DummyPlayer
 
 
 def test_player_creation_success():

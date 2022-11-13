@@ -76,6 +76,11 @@ class Field:
         """Vrací, zda-li je políčko označeno či nikoliv."""
         return self.mark != ""
 
+    @property
+    def copy(self) -> "Field":
+        """Vrací kopii tohoto objektu."""
+        return Field(self.x, self.y, self.mark)
+
     @classmethod
     def available_marks(cls) -> tuple[str, str]:
         """Značky, kterými je možné políčko označit."""
@@ -92,6 +97,43 @@ class Field:
             raise FieldError(
                 f"Neočekávaná značka: '{mark}'. "
                 f"Zkus některou z: {Field.available_marks}")
+
+
+class FieldClosure:
+    """Instance této třídy slouží jako obálka políčka, které má být ukryto
+    před kýmkoliv co do změny - aby ho nebylo možné libovolně měnit za účelem
+    podvádění. Přesto instance této třídy umožňují vystavit důležité aspekty
+    políčka.
+
+    V kontextu hry je pak hráči vystavena sada těchto obálek, přičemž se v
+    rámci svého tahu hráč na konkrétní políčko (jehož označením by chtěl
+    táhnout) pomocí zástupného znaku. Díky tomu je možné automatizovaně
+    poznat, které políčko chce hráč označit. Tento znak pak má význam pouze
+    tehdy, je-li takový tah v této situaci možný. Není-li, není třeba toto
+    políčko vystavovat a nijak se na něj odkazovat."""
+
+    def __init__(self, field: Field, substitute: str = None):
+        """Initor, který přijímá obalované políčko a zástupný znak, kterým má
+        být políčko symbolizováno.
+        """
+        self.__field = field
+        self.__substitute = substitute
+
+    @property
+    def substitute_character(self) -> str:
+        """Zástupný znak, pomocí kterého se lze na dané políčko odkázat."""
+        return self.__substitute
+
+    @property
+    def coords(self) -> tuple[int, int]:
+        """Souřadnice políčka, které je touto instancí obaleno."""
+        return self.__field.xy
+
+    @property
+    def has_substitute_character(self) -> bool:
+        """Zda-li má políčko zástupný znak; jinými slovy zda-li lze políčko
+        označit a tím provést svůj tah."""
+        return self.__substitute is not None
 
 
 class FieldError(Exception):
