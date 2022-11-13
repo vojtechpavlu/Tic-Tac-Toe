@@ -52,6 +52,33 @@ class Column(EndRecognizer):
         return True
 
 
+class Row(EndRecognizer):
+    """"""
+
+    def __init__(self, row_number: int):
+        """"""
+        self._row_number = row_number
+
+    @property
+    def row_number(self) -> int:
+        """"""
+        return self._row_number
+
+    def is_end(self, board_snapshot: BoardSnapshot) -> bool:
+        """"""
+        closures = board_snapshot.field_closures
+        characters = []
+
+        for x in range(3):
+            characters.append(
+                self.find_closure(x, self.row_number, closures).character)
+
+        for character in characters:
+            if character != characters[0]:
+                return False
+        return True
+
+
 class NoMoreMoves(EndRecognizer):
     """"""
 
