@@ -32,6 +32,7 @@ class Board:
     @property
     def base(self) -> int:
         """Bazální velikost hrací plochy."""
+        return self._base
 
     @property
     def fields(self) -> tuple[Field]:
@@ -143,7 +144,7 @@ class BoardSnapshot:
         reprezentovat políčko pomocí zástupného znaku.
         """
         closures = []
-        substitutes = self.substitute_characters
+        substitutes = list(self.substitute_characters())
         for y in range(3):
             for x in range(3):
                 f = self.__board.field(x, y)
