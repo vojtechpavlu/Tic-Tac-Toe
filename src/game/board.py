@@ -15,13 +15,24 @@ class Board:
     Samotná hrací plocha se sestává z políček (instancí třídy `Field`).
     """
 
-    def __init__(self, fields: Iterable[Field]):
+    def __init__(self, fields: Iterable[Field], base: int = 3):
         """Initor, který přijímá iterovatelnou sadu všech políček, která
-        mají danou hrací plochu reprezentovat.
+        mají danou hrací plochu reprezentovat. Dále přijímá volitelný parametr
+        reprezentující základní velikost.
+
+        Základní (bazální) velikost hrací plochy je chápána jako druhá mocnina
+        políček - předpokládá se čtvercová herní plocha.
         """
+
+        self._base = base
+
         self.__fields = list(fields)
 
         self.__check_fields()
+
+    @property
+    def base(self) -> int:
+        """Bazální velikost hrací plochy."""
 
     @property
     def fields(self) -> tuple[Field]:
@@ -88,6 +99,11 @@ class Board:
         if len(set(self.__field_cords)) != self.size:
             raise BoardError(f"Souřadnice jednotlivých políček musí být "
                              f"unikátní: {self.__field_cords}", self)
+
+        if self.size != self.base ** 2:
+            raise BoardError(f"Základní velikost hrací plochy ({self.base}) "
+                             f"neodpovídá dodaným políčkům "
+                             f"({self.base ** 2} != {self.size})", self)
 
 
 class BoardSnapshot:
