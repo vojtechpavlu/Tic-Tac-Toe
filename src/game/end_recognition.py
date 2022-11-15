@@ -76,7 +76,7 @@ class Column(EndRecognizer):
 
         # Pro všechny řádky ve sloupečku si zaznamenej znak, kterým se obálka
         # políčka prezentuje
-        for y in range(3):
+        for y in range(board_snapshot.board_base):
             characters.append(
                 self.find_closure(self.column_number, y, closures).character)
 
@@ -114,7 +114,7 @@ class Row(EndRecognizer):
         closures = board_snapshot.field_closures
         characters = []
 
-        for x in range(3):
+        for x in range(board_snapshot.board_base):
             characters.append(
                 self.find_closure(x, self.row_number, closures).character)
 
@@ -162,7 +162,7 @@ class RightLeftDiagonal(EndRecognizer):
         closures = board_snapshot.field_closures
         chars = []
 
-        for i in range(3):
+        for i in range(board_snapshot.board_base):
             chars.append(self.find_closure(i, i, closures).character)
 
         if len(set(chars)) == 1:
@@ -190,8 +190,9 @@ class LeftRightDiagonal(EndRecognizer):
         closures = board_snapshot.field_closures
         chars = []
 
-        for i in range(3):
-            chars.append(self.find_closure(i, 2 - i, closures).character)
+        for i in range(board_snapshot.board_base):
+            chars.append(self.find_closure(
+                i, (board_snapshot.board_base - 1) - i, closures).character)
 
         if len(set(chars)) == 1:
             raise Win()

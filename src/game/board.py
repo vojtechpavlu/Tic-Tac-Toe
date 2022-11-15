@@ -114,7 +114,9 @@ class BoardSnapshot:
     Instance této třídy tímto obalují hrací plochu a vystavují pouze zástupné
     objekty či v kontextu hry nevýznamné kopie objektů."""
 
-    __SUBSTITUTE_CHARACTERS = tuple("123456789ABCDEF")
+    # Odstraněny znaky možné záměny - konkrétně znaky O, 0 a X, které by hráče
+    # při výběru svého tahu leda mátly
+    __SUBSTITUTE_CHARACTERS = tuple("123456789ABCDEFGHIJKLMNPQRSTUVWYZ")
 
     def __init__(self, board: Board):
         """Initor, který přijímá v parametru referenci na hrací plochu."""
@@ -139,14 +141,26 @@ class BoardSnapshot:
         return tuple([f for f in self.__board.fields if f.is_marked])
 
     @property
+    def board_base(self) -> int:
+        """Bazální (základní) velikost hrací plochy. Toto číslo reprezentuje
+        odmocninu z počtu políček hrací plochy.
+
+        Například pro hrací plochu 3x3 je bazální velikost 3, ploše 4x4
+        odpovídá bazální velikost 4.
+        """
+        return self.__board.base
+
+    @property
     def field_closures(self) -> tuple[FieldClosure]:
         """Ntice obálek všech políček. Každá tato obálka pak umožňuje
         reprezentovat políčko pomocí zástupného znaku.
         """
         closures = []
+
+        # Připrav si seznam zástupných znaků
         substitutes = list(self.substitute_characters())
-        for y in range(3):
-            for x in range(3):
+        for y in range(self.board_base):
+            for x in range(self.board_base):
                 f = self.__board.field(x, y)
                 mark = str(substitutes.pop(0)) if not f.is_marked else None
                 closures.append(FieldClosure(f, mark))
@@ -158,12 +172,12 @@ class BoardSnapshot:
         """
         lines = []
         closures = self.field_closures
-        for y in range(3):
+        for y in range(self.board_base):
             chars = []
-            for x in range(3):
-                chars.append(closures[3 * y + x].character)
+            for x in range(self.board_base):
+                chars.append(closures[self.board_base * y + x].character)
             lines.append(" | ".join(chars))
-        return f"\n{'-'*9}\n".join(lines)
+        return f"\n{'-' * (self.board_base * 3)}\n".join(lines)
 
     @property
     def valid_moves(self) -> tuple[str]:
