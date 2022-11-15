@@ -25,7 +25,6 @@ class Board:
         """
 
         self._base = base
-
         self.__fields = list(fields)
 
         self.__check_fields()
@@ -180,15 +179,20 @@ class BoardSnapshot:
         return cls.__SUBSTITUTE_CHARACTERS
 
 
-def default_board() -> Board:
+def default_board(base: int = 3) -> Board:
     """Tovární funkce pro vytvoření obecné, jednoduché hrací plochy s výchozím
     nastavením."""
+
+    if base < 1:
+        raise BoardError(
+            f"Hrací plocha musí mít základ alespoň 1: {base}", None)
+
     # Inicializace prázdného seznamu
     fields = []
 
     # Vygenerování všech políček
-    for x in range(3):
-        for y in range(3):
+    for x in range(base):
+        for y in range(base):
             fields.append(Field(x, y))
 
     # Navrácení nové instance hrací plochy
