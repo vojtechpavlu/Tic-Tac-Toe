@@ -68,7 +68,7 @@ class Board:
     @property
     def copy(self) -> "Board":
         """Vrací hlubokou kopii tohoto objektu."""
-        return Board([f.copy for f in self.fields])
+        return Board([f.copy for f in self.fields], self.base)
 
     def has_field(self, x: int, y: int) -> bool:
         """Vrátí informaci o tom, zda-li je na hrací ploše políčko přítomné.
@@ -211,7 +211,7 @@ def default_board(base: int = 3) -> Board:
             fields.append(Field(x, y))
 
     # Navrácení nové instance hrací plochy
-    return Board(fields)
+    return Board(fields, base)
 
 
 class BoardError(Exception):
