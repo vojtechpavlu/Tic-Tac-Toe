@@ -15,7 +15,7 @@ class Game:
     """Reprezentace hry dvou hráčů."""
 
     def __init__(self, players: Iterable[Player],
-                 board: Board = default_board()):
+                 board: Board = None):
         """Initor, který přijímá sadu hráčů a hrací plochu, na které má hra
         probíhat.
 
@@ -25,7 +25,7 @@ class Game:
         splěny, je vyhozena výjimka.
         """
         self.__players = list(players)
-        self.__board = board
+        self.__board = board or default_board()
         self.__end_recognizers: list[EndRecognizer] = []
 
         # Kontrola, že jsou dodaní hráči validní. Pokud by nebyli,
