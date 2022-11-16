@@ -144,7 +144,7 @@ class Game:
     @staticmethod
     def __clear_player_input(player_input: str) -> str:
         """Očišťuje hráčův vstup o mezery a převádí ho na malá písmena."""
-        return player_input.strip().lower()
+        return player_input.strip().upper()
 
     @staticmethod
     def __check_player_input(board_snapshot: BoardSnapshot,
