@@ -187,6 +187,12 @@ class BoardSnapshot:
         return tuple([fc.substitute_character for fc in self.field_closures
                       if fc.has_substitute_character])
 
+    def find_closure(self, x: int, y: int) -> FieldClosure:
+        """Pokusí se najít obálku políčka, pokud existuje."""
+        for field in self.field_closures:
+            if field.coords[0] == x and field.coords[1] == y:
+                return field
+
     @classmethod
     def substitute_characters(cls) -> tuple[str]:
         """Vrací privátní třídní ntici reprezentující zástupné znaky pro
