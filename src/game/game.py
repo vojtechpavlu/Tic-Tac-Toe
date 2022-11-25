@@ -85,7 +85,7 @@ class Game:
             # Pokud uživatel zadal validní tah, proveď ho - označ políčko,
             # které specifikoval uživatel
             for closure in snapshot.field_closures:
-                if player_move == closure.character:
+                if player_move == closure.identifier:
                     self.__board.mark(*closure.coords, player.mark)
                     break
 
