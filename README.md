@@ -62,7 +62,8 @@ příslušné instance. Takovými objekty jsou instance třídy `BoardSnapshot` 
 `FieldClosure`.
 
 Hrací plochu je možné tvořit samostatně iniciací vlastních políček, ale 
-doporučeným postupem je použití funkce `default_board(int)`
+doporučeným postupem je použití funkce `default_board(int) -> Board` v modulu
+`./src/game/board`, která připraví hrací plochu z dodané bazální velikosti.
 
 ## Hráč
 
@@ -70,8 +71,8 @@ Nad rámec frameworku projekt dále definuje základní hráče (viz balíček
 `./src/players`):
 
 - **Lidský hráč** (`HumanPlayer`), který umožňuje zkoušet hru člověkem
-- **Náhodný hráč** (`RandomNPCPlayer`), který umožňuje hru jednoho hráče proti
-neracionálnímu agentovi
+- **Náhodný hráč** (`RandomNPCPlayer`), který umožňuje demonstrovat hru 
+neracionálního agenta, který své tahy volí zcela nahodile z dodaných možných
 - ***TODO***
 
 Obecný protokol hráče je definován abstraktní třídou `Player` v balíčku 
@@ -86,5 +87,21 @@ od souřadnic políček, které chce hráč označit, podle vzoru `X Y`, tedy na
 `1 2`.
 
 Díky této konstrukci je možné standardizovat hráče co do jeho vnějších projevů,
-neboť se kromě bonity svých tahů chovají ve hře zcela identicky.
+neboť se kromě bonity svých tahů chovají ve hře v podstatě identicky.
 
+### Lidský hráč (`HumanPlayer`)
+
+Lidský hráč je implementován tak, aby uživateli umožnil dodat svůj tah přes
+konzolový vstup. Je tedy pomocí built-in funkce `input` vyzván, aby svůj tah
+v každé iteraci dodal.
+
+
+### Náhodný hráč (`RandomNPCPlayer`)
+
+Náhodný hráč je neracionálním agentem. Své tahy volí zcela na základě náhody
+z dodaných tahů, které jsou pro jeho tah povoleny. Toho je dosaženo pomocí
+funkce `random.choice(Iterable[T]) -> T`, která vrací jeden náhodný element
+z dodané iterovatelné sekvence. V tomto případě z množiny povolených tahů.
+
+
+### TODO
