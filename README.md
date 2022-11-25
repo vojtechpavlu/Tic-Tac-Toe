@@ -46,6 +46,12 @@ reprezentuje v každém momentu hry množinu označených políček jedním či 
 hráčem. Konkrétní implementaci hrací plochy lze nalézt v definici třídy 
 `Board`, jejíž instance slouží jako kontejnery pro sady políček hry.
 
+Velikost hrací plochy se odvíjí od své bazální (základní) velikosti, která
+odpovídá odmocnině z počtu políček (předpokládá se čtvercová hrací plocha). 
+Proto například hrací plocha `3x3` o 9 políčích má základní veliksot `3`.
+Ikdyž by to pravidlům hry *de facto* neodporovalo, z praktických důvodů je
+tato velikost omezena na rozmezí $[1,9]$ (tedy jednociferná čísla).
+
 Každé políčko je v rámci implementace chápáno jako jakási přepravka obsahující
 souřadnice políčka (v osách `x` a `y`) a případné označení jednoho z hráčů.
 Konkrétní implementaci lze nalézt ve třídě `Field`.
@@ -55,6 +61,8 @@ předán vždy jen obalený *proxy* objekt, který symbolizuje podstatné vlastn
 příslušné instance. Takovými objekty jsou instance třídy `BoardSnapshot` a 
 `FieldClosure`.
 
+Hrací plochu je možné tvořit samostatně iniciací vlastních políček, ale 
+doporučeným postupem je použití funkce `default_board(int)`
 
 ## Hráč
 
@@ -69,7 +77,13 @@ neracionálnímu agentovi
 Obecný protokol hráče je definován abstraktní třídou `Player` v balíčku 
 `./src/game/`, jejíž instance jsou především nositeli jména hráče, znaku 
 (pomocí kterého políčka svých tahů označují, typicky `X` nebo `O`) a metody, 
-která hráčův tah umožňuje.
+která hráčův tah umožňuje. Tato je popsána signaturou 
+`move(BoardSnapshot, tuple[str]) -> str`, je tedy hráči poskytnut aktuální
+snímek hrací plochy a sada povolených tahů, které může provést. Z nich je jeho
+cílem vybrat právě jeden. Pokud vybere jako svůj tah takový, který mezi 
+povolenými tahy není, svůj tah musí hráč opakovat. Podoba tahů je odvozena
+od souřadnic políček, které chce hráč označit, podle vzoru `X Y`, tedy např.
+`1 2`.
 
 Díky této konstrukci je možné standardizovat hráče co do jeho vnějších projevů,
 neboť se kromě bonity svých tahů chovají ve hře zcela identicky.
