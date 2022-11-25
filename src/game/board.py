@@ -213,7 +213,7 @@ class BoardError(Exception):
     rozhraní pro poskytování hrací plochy, v jejímž kontextu došlo k chybě.
     """
 
-    def __init__(self, message: str, board: Board):
+    def __init__(self, message: str, board: Board = None):
         """Initor, který přijímá zprávu o chybě a hrací plochu, v jejímž
         kontextu k chybě došlo.
         """
