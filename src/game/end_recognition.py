@@ -7,7 +7,7 @@ from typing import Iterable
 
 from src.game.board import BoardSnapshot
 from src.game.field import FieldClosure
-from src.game.game_resul_exceptions import Win, Draw
+from src.game.game_result_exceptions import Win, Draw
 
 
 class EndRecognizer(ABC):
