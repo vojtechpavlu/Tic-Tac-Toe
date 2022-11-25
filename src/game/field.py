@@ -103,28 +103,13 @@ class FieldClosure:
     """Instance této třídy slouží jako obálka políčka, které má být ukryto
     před kýmkoliv co do změny - aby ho nebylo možné libovolně měnit za účelem
     podvádění. Přesto instance této třídy umožňují vystavit důležité aspekty
-    políčka.
+    políčka."""
 
-    V kontextu hry je pak hráči vystavena sada těchto obálek, přičemž se v
-    rámci svého tahu hráč na konkrétní políčko (jehož označením by chtěl
-    táhnout) pomocí zástupného znaku. Díky tomu je možné automatizovaně
-    poznat, které políčko chce hráč označit. Tento znak pak má význam pouze
-    tehdy, je-li takový tah v této situaci možný. Není-li, není třeba toto
-    políčko vystavovat a nijak se na něj odkazovat."""
-
-    def __init__(self, field: Field, substitute: str = None):
+    def __init__(self, field: Field):
         """Initor, který přijímá obalované políčko a zástupný znak, kterým má
         být políčko symbolizováno.
         """
         self.__field = field
-        self.__substitute = substitute
-
-        self.__check_character()
-
-    @property
-    def substitute_character(self) -> str:
-        """Zástupný znak, pomocí kterého se lze na dané políčko odkázat."""
-        return self.__substitute
 
     @property
     def mark(self) -> str:
