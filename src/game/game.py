@@ -130,7 +130,7 @@ class Game:
         hrací plochy.
         """
         # Rozpoznávače spojení sloupců a řádků
-        for i in range(3):
+        for i in range(self.__board.base):
             self.__end_recognizers.append(Column(i))
             self.__end_recognizers.append(Row(i))
 
