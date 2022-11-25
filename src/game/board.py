@@ -152,9 +152,6 @@ class BoardSnapshot:
         reprezentovat políčko pomocí zástupného znaku.
         """
         closures = []
-
-        # Připrav si seznam zástupných znaků
-        substitutes = list(self.substitute_characters())
         for y in range(self.board_base):
             for x in range(self.board_base):
                 closures.append(FieldClosure(self.__board.field(x, y)))
@@ -178,8 +175,8 @@ class BoardSnapshot:
         """Ntice všech zástupných znaků reprezentujících jednoznačné reference
         na políčka hrací desky, která lze označit, resp. na kterých lze provést
         tah."""
-        return tuple([fc.substitute_character for fc in self.field_closures
-                      if fc.has_substitute_character])
+        return tuple([fc.identifier for fc in self.field_closures
+                      if not fc.is_marked])
 
     def find_closure(self, x: int, y: int) -> FieldClosure:
         """Pokusí se najít obálku políčka, pokud existuje."""
