@@ -7,7 +7,7 @@ from typing import Iterable
 from src.game.board import Board, default_board, BoardSnapshot
 from src.game.end_recognition import (EndRecognizer, Column, NoMoreMoves, Row,
                                       LeftRightDiagonal, RightLeftDiagonal)
-from src.game.game_resul_exceptions import Draw, GameOver, Win
+from src.game.game_result_exceptions import Draw, GameOver, Win
 from src.game.player import Player
 
 
