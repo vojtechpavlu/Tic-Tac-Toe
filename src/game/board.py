@@ -192,8 +192,9 @@ def default_board(base: int = 3) -> Board:
     nastavením."""
 
     if base < 1:
-        raise BoardError(
-            f"Hrací plocha musí mít základ alespoň 1: {base}", None)
+        raise BoardError(f"Hrací plocha musí mít základ alespoň 1: {base}")
+    elif base >= 10:
+        raise BoardError(f"Hrací plocha musí mít základ maximálně 9: {base}")
 
     # Inicializace prázdného seznamu
     fields = []
