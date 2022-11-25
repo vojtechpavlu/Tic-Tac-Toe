@@ -1,9 +1,13 @@
 # Piškvorky
 
 Projekt pro demonstraci principů symbolických metod pro řešení 
-problémů ve stavovém prostoru. Tento projekt byl vyvinut jako studijní
-pomůcka pro výuku umělé inteligence při [Smíchovské střední průmyslové škole
-a gymnáziu](https://www.ssps.cz/).
+problémů ve stavovém prostoru. Konrkétně je cílem demonstrovat možné přístupy
+k hledání optimální strategie v pomocí soupeřivého prohledávání v rámci tématu
+teorie her. 
+
+Tento projekt byl vyvinut jako studijní pomůcka pro výuku umělé 
+inteligence při 
+[Smíchovské střední průmyslové škole a gymnáziu](https://www.ssps.cz/).
 
 ---
 
@@ -11,6 +15,17 @@ Projekt plní několik základních rolí. V první řadě stanovuje základní
 jednoduchý framework pro jednoduchou hru piškvorky, obsahuje základní definici
 obecného hráče a definuje způsob interakce mezi hráčem a hrou tak, aby bylo
 zajištěno, že takový hráč nemůže podvádět.
+
+
+<br />
+
+**Zajímavé odkazy:**
+- [Graf na Wikipedii](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics))
+- [Stavový prostor na Wikipedii](https://en.wikipedia.org/wiki/State_space)
+- [Teorie her na Wikipedii](https://en.wikipedia.org/wiki/Game_theory)
+- [Minmax algoritmus na Wikipedii](https://en.wikipedia.org/wiki/Minimax)
+- [Alfa-beta prořezávání na Wikipedii](https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning)
+- [Studijní materiály na Google Drive](https://tinyurl.com/ssps-umela-inteligence)
 
 
 ## Hra
