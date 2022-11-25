@@ -21,7 +21,9 @@ class RandomNPCPlayer(Player):
         hře. Metoda je postavena na podstatě výběru náhodného tahu ze sady
         všech přípustných tahů.
         """
-        return random.choice(valid_moves)
+        random_move = random.choice(valid_moves)
+        print(f"Náhodně jsem si vybralo tah '{random_move}'")
+        return random_move
 
 
 
