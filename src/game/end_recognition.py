@@ -77,8 +77,10 @@ class Column(EndRecognizer):
         # Pro všechny řádky ve sloupečku si zaznamenej znak, kterým se obálka
         # políčka prezentuje
         for y in range(board_snapshot.board_base):
-            characters.append(
-                self.find_closure(self.column_number, y, closures).character)
+            closure = self.find_closure(self.column_number, y, closures)
+            if not closure.is_marked:
+                return
+            characters.append(closure.mark)
 
         # Pokud je mezi znaky jen jediný společný (unikátní) znak, znamená
         # to, že je sloupec spojen
@@ -115,8 +117,11 @@ class Row(EndRecognizer):
         characters = []
 
         for x in range(board_snapshot.board_base):
-            characters.append(
-                self.find_closure(x, self.row_number, closures).character)
+            closure = self.find_closure(x, self.row_number, closures)
+            if not closure.is_marked:
+                return
+
+            characters.append(closure.mark)
 
         # Pokud je mezi znaky jen jediný společný (unikátní) znak, znamená
         # to, že je řádek spojen
@@ -163,7 +168,11 @@ class RightLeftDiagonal(EndRecognizer):
         chars = []
 
         for i in range(board_snapshot.board_base):
-            chars.append(self.find_closure(i, i, closures).character)
+            closure = self.find_closure(i, i, closures)
+            if not closure.is_marked:
+                return
+
+            chars.append(closure.mark)
 
         if len(set(chars)) == 1:
             raise Win()
@@ -191,8 +200,11 @@ class LeftRightDiagonal(EndRecognizer):
         chars = []
 
         for i in range(board_snapshot.board_base):
-            chars.append(self.find_closure(
-                i, (board_snapshot.board_base - 1) - i, closures).character)
+            closure = self.find_closure(
+                i, (board_snapshot.board_base - 1) - i, closures)
+            if not closure.is_marked:
+                return
+            chars.append(closure.mark)
 
         if len(set(chars)) == 1:
             raise Win()
