@@ -161,14 +161,16 @@ class BoardSnapshot:
     def stringify(self) -> str:
         """Převede aktuální rozložení hrací plochy na textovou reprezentaci.
         """
-        lines = []
         closures = self.field_closures
+        x_axis = [str(i) for i in range(self.board_base)]
+        lines = [(4 * " ") + " | ".join(x_axis) + " |"]
         for y in range(self.board_base):
-            chars = []
+            chars = [str(y)]
             for x in range(self.board_base):
-                chars.append(closures[self.board_base * y + x].character)
-            lines.append(" | ".join(chars))
-        return f"\n{'-' * (self.board_base * 3)}\n".join(lines)
+                closure = closures[self.board_base * y + x]
+                chars.append(closure.mark if closure.is_marked else " ")
+            lines.append(" | ".join(chars) + " |")
+        return f"\n{'-' * ((self.board_base * 4) + 3)}\n".join(lines)
 
     @property
     def valid_moves(self) -> tuple[str]:
