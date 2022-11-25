@@ -7,7 +7,7 @@ from typing import Iterable
 from src.game.board import Board, default_board, BoardSnapshot
 from src.game.end_recognition import (EndRecognizer, Column, NoMoreMoves, Row,
                                       LeftRightDiagonal, RightLeftDiagonal)
-from src.game.game_resul_exceptions import Draw, GameOver, Win
+from src.game.game_result_exceptions import Draw, GameOver, Win
 from src.game.player import Player
 
 
@@ -85,7 +85,7 @@ class Game:
             # Pokud uživatel zadal validní tah, proveď ho - označ políčko,
             # které specifikoval uživatel
             for closure in snapshot.field_closures:
-                if player_move == closure.character:
+                if player_move == closure.identifier:
                     self.__board.mark(*closure.coords, player.mark)
                     break
 
@@ -130,7 +130,7 @@ class Game:
         hrací plochy.
         """
         # Rozpoznávače spojení sloupců a řádků
-        for i in range(3):
+        for i in range(self.__board.base):
             self.__end_recognizers.append(Column(i))
             self.__end_recognizers.append(Row(i))
 

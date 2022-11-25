@@ -103,28 +103,13 @@ class FieldClosure:
     """Instance této třídy slouží jako obálka políčka, které má být ukryto
     před kýmkoliv co do změny - aby ho nebylo možné libovolně měnit za účelem
     podvádění. Přesto instance této třídy umožňují vystavit důležité aspekty
-    políčka.
+    políčka."""
 
-    V kontextu hry je pak hráči vystavena sada těchto obálek, přičemž se v
-    rámci svého tahu hráč na konkrétní políčko (jehož označením by chtěl
-    táhnout) pomocí zástupného znaku. Díky tomu je možné automatizovaně
-    poznat, které políčko chce hráč označit. Tento znak pak má význam pouze
-    tehdy, je-li takový tah v této situaci možný. Není-li, není třeba toto
-    políčko vystavovat a nijak se na něj odkazovat."""
-
-    def __init__(self, field: Field, substitute: str = None):
+    def __init__(self, field: Field):
         """Initor, který přijímá obalované políčko a zástupný znak, kterým má
         být políčko symbolizováno.
         """
         self.__field = field
-        self.__substitute = substitute
-
-        self.__check_character()
-
-    @property
-    def substitute_character(self) -> str:
-        """Zástupný znak, pomocí kterého se lze na dané políčko odkázat."""
-        return self.__substitute
 
     @property
     def mark(self) -> str:
@@ -133,37 +118,23 @@ class FieldClosure:
         return self.__field.mark
 
     @property
-    def character(self) -> str:
-        """Textová reprezentace obálky políčka. Konkrétně jde o znak, který
-        políčko vizuálně symbolizuje.
+    def is_marked(self) -> bool:
+        """Vrací, zda-li bylo políčko označeno či nikoliv."""
+        return self.__field.is_marked
+
+    @property
+    def identifier(self) -> str:
+        """Textová reprezentace obálky políčka. Konkrétně jde o znak či soubor
+        znaků, které políčko vizuálně symbolizují.
 
         Bylo-li již na políčku taženo, pak vrátí značku obalovaného políčka.
-        V opačném případě vrací zástupný znak políčka."""
-        return self.mark or self.substitute_character
+        V opačném případě vrací souřadnice políčka ve formátu `X Y`."""
+        return self.mark or f"{self.__field.x} {self.__field.y}"
 
     @property
     def coords(self) -> tuple[int, int]:
         """Souřadnice políčka, které je touto instancí obaleno."""
         return self.__field.xy
-
-    @property
-    def has_substitute_character(self) -> bool:
-        """Zda-li má políčko zástupný znak; jinými slovy zda-li lze políčko
-        označit a tím provést svůj tah."""
-        return self.__substitute is not None
-
-    def __check_character(self):
-        """Kontrola, že má obálka správně stanoven znak. Políčko musí být
-        označeno hráčem (tahem), nebo musí mít obálka jednoznačné označení.
-        Musí vždy mít právě jedno."""
-        if self.mark and self.has_substitute_character:
-            raise FieldError(
-                f"Políčko nemůže být označeno a dále vystupovat jako políčko "
-                f"označitelné", self.__field)
-        if not self.mark and not self.has_substitute_character:
-            raise FieldError(
-                f"Políčko musí být již označené nebo musí mít zástupný znak",
-                self.__field)
 
 
 class FieldError(Exception):

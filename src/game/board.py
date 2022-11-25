@@ -114,10 +114,6 @@ class BoardSnapshot:
     Instance této třídy tímto obalují hrací plochu a vystavují pouze zástupné
     objekty či v kontextu hry nevýznamné kopie objektů."""
 
-    # Odstraněny znaky možné záměny - konkrétně znaky O, 0 a X, které by hráče
-    # při výběru svého tahu leda mátly
-    __SUBSTITUTE_CHARACTERS = tuple("123456789ABCDEFGHIJKLMNPQRSTUVWYZ")
-
     def __init__(self, board: Board):
         """Initor, který přijímá v parametru referenci na hrací plochu."""
         self.__board = board.copy
@@ -156,36 +152,33 @@ class BoardSnapshot:
         reprezentovat políčko pomocí zástupného znaku.
         """
         closures = []
-
-        # Připrav si seznam zástupných znaků
-        substitutes = list(self.substitute_characters())
         for y in range(self.board_base):
             for x in range(self.board_base):
-                f = self.__board.field(x, y)
-                mark = str(substitutes.pop(0)) if not f.is_marked else None
-                closures.append(FieldClosure(f, mark))
+                closures.append(FieldClosure(self.__board.field(x, y)))
         return tuple(closures)
 
     @property
     def stringify(self) -> str:
         """Převede aktuální rozložení hrací plochy na textovou reprezentaci.
         """
-        lines = []
         closures = self.field_closures
+        x_axis = [str(i) for i in range(self.board_base)]
+        lines = [(4 * " ") + " | ".join(x_axis) + " |"]
         for y in range(self.board_base):
-            chars = []
+            chars = [str(y)]
             for x in range(self.board_base):
-                chars.append(closures[self.board_base * y + x].character)
-            lines.append(" | ".join(chars))
-        return f"\n{'-' * (self.board_base * 3)}\n".join(lines)
+                closure = closures[self.board_base * y + x]
+                chars.append(closure.mark if closure.is_marked else " ")
+            lines.append(" | ".join(chars) + " |")
+        return f"\n{'-' * ((self.board_base * 4) + 3)}\n".join(lines)
 
     @property
     def valid_moves(self) -> tuple[str]:
         """Ntice všech zástupných znaků reprezentujících jednoznačné reference
         na políčka hrací desky, která lze označit, resp. na kterých lze provést
         tah."""
-        return tuple([fc.substitute_character for fc in self.field_closures
-                      if fc.has_substitute_character])
+        return tuple([fc.identifier for fc in self.field_closures
+                      if not fc.is_marked])
 
     def find_closure(self, x: int, y: int) -> FieldClosure:
         """Pokusí se najít obálku políčka, pokud existuje."""
@@ -193,20 +186,15 @@ class BoardSnapshot:
             if field.coords[0] == x and field.coords[1] == y:
                 return field
 
-    @classmethod
-    def substitute_characters(cls) -> tuple[str]:
-        """Vrací privátní třídní ntici reprezentující zástupné znaky pro
-        specifikaci tahu hráčem."""
-        return cls.__SUBSTITUTE_CHARACTERS
-
 
 def default_board(base: int = 3) -> Board:
     """Tovární funkce pro vytvoření obecné, jednoduché hrací plochy s výchozím
     nastavením."""
 
     if base < 1:
-        raise BoardError(
-            f"Hrací plocha musí mít základ alespoň 1: {base}", None)
+        raise BoardError(f"Hrací plocha musí mít základ alespoň 1: {base}")
+    elif base >= 10:
+        raise BoardError(f"Hrací plocha musí mít základ maximálně 9: {base}")
 
     # Inicializace prázdného seznamu
     fields = []
@@ -225,7 +213,7 @@ class BoardError(Exception):
     rozhraní pro poskytování hrací plochy, v jejímž kontextu došlo k chybě.
     """
 
-    def __init__(self, message: str, board: Board):
+    def __init__(self, message: str, board: Board = None):
         """Initor, který přijímá zprávu o chybě a hrací plochu, v jejímž
         kontextu k chybě došlo.
         """

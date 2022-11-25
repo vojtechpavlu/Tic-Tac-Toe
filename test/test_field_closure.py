@@ -8,67 +8,36 @@ def field():
     return Field(1, 1)
 
 
-def test_create_field_closure(field):
-    assert FieldClosure(field, "2")
-
-
-def test_create_field_closure_with_substitute(field):
-    assert FieldClosure(field, "2")
-
-
-def test_has_substitute_positive(field):
-    assert FieldClosure(field, "2").has_substitute_character
-
-
-def test_has_substitute_negative(field):
-    field.mark = "X"
-    assert not FieldClosure(field).has_substitute_character
-
-
 def test_closure_coords(field):
     field.mark = "X"
     assert FieldClosure(field).coords == (1, 1)
 
 
-def test_closure_check_with_mark(field):
+def test_closure_if_can_be_created_with_mark(field):
     assert not field.is_marked
     field.mark = "X"
     FieldClosure(field)
 
 
-def test_closure_check_without_mark(field):
+def test_closure_if_can_be_created_without_mark(field):
     assert not field.is_marked
-    FieldClosure(field, "2")
+    FieldClosure(field)
 
 
-def test_closure_check_without_both(field):
+def test_closure_if_holds_the_info_about_its_mark(field):
     assert not field.is_marked
-
-    with pytest.raises(FieldError) as fe:
-        FieldClosure(field)  # Nemá značku ani zástupný symbol
-
-
-def test_closure_check_with_both(field):
-    assert not field.is_marked
-
+    assert not FieldClosure(field).is_marked
     field.mark = "X"
-
-    with pytest.raises(FieldError) as fe:
-        FieldClosure(field, "2")  # Má značku a zástupný symbol
+    assert FieldClosure(field).is_marked
 
 
-def test_closure_check_character_with_mark(field):
+def test_closure_if_returns_coords_of_unmarked_field(field):
+    assert not field.is_marked
+    assert FieldClosure(field).identifier == "1 1"
+
+
+def test_closure_if_does_not_returns_coords_of_marked_field(field):
     assert not field.is_marked
     field.mark = "X"
-    closure = FieldClosure(field)
-    assert closure.character == "X"
-
-
-def test_closure_check_character_with_substitute_char(field):
-    assert not field.is_marked
-    closure = FieldClosure(field, "2")
-    assert closure.character == "2"
-
-
-
+    assert FieldClosure(field).identifier == "X"
 
