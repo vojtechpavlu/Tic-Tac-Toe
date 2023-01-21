@@ -33,18 +33,24 @@ class MinmaxPlayer(Player):
 
     def move(self, board: BoardSnapshot, valid_moves: tuple[str]) -> str:
         """"""
-        new_board = []
-        for y in range(board.board_base):
-            line = []
-            for x in range(board.board_base):
-                line.append(board.find_closure(x, y).mark)
-            new_board.append(line)
+        new_board = self.__translate_board(board)
         return minimax(new_board, True, self.mark, self.opponent_mark)[1]
 
     @classmethod
     def points(cls):
         """"""
         return cls.__POINTS
+
+    @staticmethod
+    def __translate_board(board: BoardSnapshot) -> list[list[str]]:
+        """"""
+        new_board = []
+        for y in range(board.board_base):
+            line = []
+            for x in range(board.board_base):
+                line.append(board.find_closure(x, y).mark)
+            new_board.append(line)
+        return new_board
 
 
 def minimax(board, is_max, ai_mark, opp_mark) -> tuple[int, str]:
