@@ -62,7 +62,7 @@ def minimax(board, is_max, ai_mark, opp_mark) -> tuple[int, str]:
     result = evaluate(board)
 
     if result:
-        return MinmaxPlayer.points[result], ""
+        return MinmaxPlayer.points()[result], ""
 
     best_move = ""
     best_score = float("-inf") if is_max else float("inf")
