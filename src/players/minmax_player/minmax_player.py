@@ -1,15 +1,30 @@
-""""""
+"""Tento modul obsahuje racionálního hráče postaveného na algoritmu Minmax.
+Cílem tohoto hráče je demonstrovat hledání optimální strategie.
+"""
+
 from src.game.board import BoardSnapshot
 from src.game.player import Player
 
 
 class MinmaxPlayer(Player):
-    """"""
+    """Instance této třídy jsou odpovědné za simulaci neporazitelného hráče.
+    Tento hráč je navržen tak, aby volil své tahy (své strategie) na základě
+    garančního algoritmu minmax, čímž dosahuje v tom nejméně příznivém případě
+    remízy.
+    """
 
+    # Distribuce výplat pro jednotlivé výsledky hry; slovník je inicializován
+    # z initoru instance této třídy v závislosti na přiřazené značce
     __POINTS = {}
 
     def __init__(self, player_name: str, mark: str):
+        """Initor instance, který přijímá v parametru název hráče a značku,
+        kterou má používat pro označování svých políček.
+        """
+        # Volání initoru předka
         super().__init__(player_name, mark)
+
+        # Inicializace slovníku výplat
         MinmaxPlayer.__POINTS = {
             mark: 1,                 # Body za výhru
             self.opponent_mark: -1,  # Body za prohru
