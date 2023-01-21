@@ -57,22 +57,38 @@ class MinmaxPlayer(Player):
 
 
 def minimax(board, is_max, ai_mark, opp_mark) -> tuple[int, str]:
-    """"""
+    """Samotná definice rekurzivního garančního algoritmu minmax, který
+    je odpovědný za výběr tahu s největším potenciálem na výhru.
 
+    Funkce vrací bodový zisk a tah, který k němu vede.
+    """
+
+    # Test terminality uzlu - uloží si výsledek
     result = is_terminate(board)
 
+    # Pokud je terminální (výsledek jiný než prázdný řetězec)
     if result:
         return MinmaxPlayer.points()[result], ""
 
+    # Připrav si aktuální odhady nejlepšího tahu a nejlepšího výsledku
     best_move = ""
     best_score = float("-inf") if is_max else float("inf")
 
+    # Pro každé políčko
     for y in range(len(board)):
         for x in range(len(board)):
+
+            # Lze-li políčko vyplnit
             if board[y][x] == "":
+
+                # Nastav políčku značku aktuálního hráče
                 board[y][x] = ai_mark if is_max else opp_mark
+
+                # Zjisti aktuální skóre rekurzivním zavoláním sebe sama
                 score = minimax(board, not is_max, ai_mark, opp_mark)[0]
-                board[y][x] = ""
+
+                # Pokud je skóre pro daného hráče výhodné, je to pro něj
+                # doposud nejlepší tah
                 if is_max and score > best_score:
                     best_score = score
                     best_move = f"{x} {y}"
@@ -80,6 +96,10 @@ def minimax(board, is_max, ai_mark, opp_mark) -> tuple[int, str]:
                     best_score = score
                     best_move = f"{x} {y}"
 
+                # V rámci backtrackingu se vrať
+                board[y][x] = ""
+
+    # Vrať nejlepší nalezené skóre při aplikaci vráceného tahu
     return best_score, best_move
 
 
