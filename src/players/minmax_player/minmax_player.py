@@ -28,17 +28,25 @@ class MinmaxPlayer(Player):
         MinmaxPlayer.__POINTS = {
             mark: 1,                 # Body za výhru
             self.opponent_mark: -1,  # Body za prohru
-            "draw": 0                # Bory za remízu
+            "draw": 0                # Body za remízu
         }
 
     def move(self, board: BoardSnapshot, valid_moves: tuple[str]) -> str:
-        """"""
+        """Metoda odpovědná za výběr optimálního, leč racionálního tahu.
+        Přijímá otisk hrací plochy, který si převádí do interní reprezentace
+        pomocí privátní statické metody
+        `__translate_board(BoardSnapshot) -> list[list[str]]`. Tento proces
+        byl zvolen jako výpočetně nejpoužitelnější.
+
+        Dále tato metoda iniciuje minimax algoritmus, který vrací zvolený tah.
+        """
         new_board = self.__translate_board(board)
         return minimax(new_board, True, self.mark, self.opponent_mark)[1]
 
     @classmethod
     def points(cls):
-        """"""
+        """Třídní metoda vracející bodové ohodnocení pro jednotlivé výsledky.
+        """
         return cls.__POINTS
 
     @staticmethod
@@ -56,7 +64,8 @@ class MinmaxPlayer(Player):
         return new_board
 
 
-def minimax(board, is_max, ai_mark, opp_mark) -> tuple[int, str]:
+def minimax(board: list[list[str]], is_maximizing: bool, minmax_mark: str,
+            opponent_mark: str) -> tuple[int, str]:
     """Samotná definice rekurzivního garančního algoritmu minmax, který
     je odpovědný za výběr tahu s největším potenciálem na výhru.
 
@@ -72,7 +81,7 @@ def minimax(board, is_max, ai_mark, opp_mark) -> tuple[int, str]:
 
     # Připrav si aktuální odhady nejlepšího tahu a nejlepšího výsledku
     best_move = ""
-    best_score = float("-inf") if is_max else float("inf")
+    best_score = float("-inf") if is_maximizing else float("inf")
 
     # Pro každé políčko
     for y in range(len(board)):
@@ -82,17 +91,22 @@ def minimax(board, is_max, ai_mark, opp_mark) -> tuple[int, str]:
             if board[y][x] == "":
 
                 # Nastav políčku značku aktuálního hráče
-                board[y][x] = ai_mark if is_max else opp_mark
+                board[y][x] = minmax_mark if is_maximizing else opponent_mark
 
                 # Zjisti aktuální skóre rekurzivním zavoláním sebe sama
-                score = minimax(board, not is_max, ai_mark, opp_mark)[0]
+                score = minimax(
+                    board,
+                    not is_maximizing,
+                    minmax_mark,
+                    opponent_mark
+                )[0]
 
                 # Pokud je skóre pro daného hráče výhodné, je to pro něj
                 # doposud nejlepší tah
-                if is_max and score > best_score:
+                if is_maximizing and score > best_score:
                     best_score = score
                     best_move = f"{x} {y}"
-                elif not is_max and score < best_score:
+                elif not is_maximizing and score < best_score:
                     best_score = score
                     best_move = f"{x} {y}"
 
@@ -103,7 +117,7 @@ def minimax(board, is_max, ai_mark, opp_mark) -> tuple[int, str]:
     return best_score, best_move
 
 
-def is_terminate(board) -> str:
+def is_terminate(board: list[list[str]]) -> str:
     """Funkce odpovědná za ověření, zda-li není stav (hrací plocha) již listem
     stromu (terminální uzel). Pokud ano, vrací značku výherce nebo textový
     řetězec `draw`. V opačném případě vrací prázdný řetězec.
@@ -112,7 +126,7 @@ def is_terminate(board) -> str:
             check_diagonals(board) or check_draw(board) or "")
 
 
-def check_horizontals(board):
+def check_horizontals(board: list[list[str]]) -> str:
     """Funkce odpovědná za kontrolu řádků. Pokud jsou v některém z řádků
     vyplněna všechna políčka jedním hráčem, vrací funkce značku tohoto
     hráče, jinak vrací prázdný řetězec.
@@ -123,7 +137,7 @@ def check_horizontals(board):
     return ""
 
 
-def check_verticals(board):
+def check_verticals(board: list[list[str]]) -> str:
     """Funkce odpovědná za kontrolu, zda-li není zcela vyplněn některý ze
     sloupečků hrací plochy značkami jednoho hráče. Pokud ano, vrací jeho
     značku, jinak prázdný řetězec.
@@ -137,7 +151,7 @@ def check_verticals(board):
     return ""
 
 
-def check_diagonals(board):
+def check_diagonals(board: list[list[str]]) -> str:
     """Funkce odpovědná za provedení kontroly obou diagonál. Pokud je alespoň
     jedna diagonála vyplněna stejnou značkou, vrací tuto značku. Jinak vrací
     prázdný řetězec.
@@ -155,7 +169,7 @@ def check_diagonals(board):
         return ""
 
 
-def check_draw(board) -> str:
+def check_draw(board: list[list[str]]) -> str:
     """Funkce odpovědná za kontrolu, že hra dospěla, resp. nedospěla do
     remízového stavu. Pokud najde volné políčko, které lze vyplnit, funkce
     vrací prázdný řetězec; pokud takové políčko neexistuje, vrací textový
