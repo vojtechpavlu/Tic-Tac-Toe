@@ -26,10 +26,18 @@ class GameOver(Exception):
     a tím umožňuje probublat až k instanci první kategorie.
     """
 
-    def __init__(self, message: str):
-        """Initor, který přijímá textovou reprezentaci zprávy o ukončení hry.
+    def __init__(self, winner: str, message: str):
+        """Initor, který přijímá jméno hráče, který vyhrál a textovou
+        reprezentaci zprávy o ukončení hry.
         """
         Exception.__init__(self, message)
+        self.__winner = winner
+
+    @property
+    def winner(self) -> str:
+        """Jméno hráče, který vyhrál. Pokud hra skončila remízou, vrací None.
+        """
+        return self.__winner
 
 
 

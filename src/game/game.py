@@ -97,12 +97,15 @@ class Game:
                 # Pokud je daný stav remízou
                 except Draw:
                     raise GameOver(
+                        None,
                         f"Hra skončila remízou - {end_recognizer.description}")
 
                 # Pokud je daný stav výhrou jednoho z hráčů
                 except Win:
-                    raise GameOver(f"Hráč '{player.player_name}' vyhrál - "
-                                   f"{end_recognizer.description}")
+                    raise GameOver(
+                        player.player_name,
+                        f"Hráč '{player.player_name}' vyhrál - "
+                        f"{end_recognizer.description}")
 
             # Další tah
             index += 1
