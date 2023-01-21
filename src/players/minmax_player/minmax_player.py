@@ -43,13 +43,16 @@ class MinmaxPlayer(Player):
 
     @staticmethod
     def __translate_board(board: BoardSnapshot) -> list[list[str]]:
-        """"""
+        """Statická metoda odpovědná za převedení hrací plochy v podobě
+        instance třídy `BoardSnapshot` do dvoudimenzionálního seznamu
+        textových řetězců.
+        """
         new_board = []
-        for y in range(board.board_base):
-            line = []
-            for x in range(board.board_base):
-                line.append(board.find_closure(x, y).mark)
-            new_board.append(line)
+        base = board.board_base
+        for y in range(base):
+            new_board.append(
+                [board.find_closure(x, y).mark for x in range(base)]
+            )
         return new_board
 
 
