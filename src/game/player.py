@@ -41,6 +41,11 @@ class Player(ABC):
         return self.__player_name
 
     @property
+    def opponent_mark(self) -> str:
+        """Značka, kterou používá protihráč."""
+        return "X" if self.mark == "O" else "O"
+
+    @property
     def mark(self) -> str:
         """Značka, kterou hráč označuje políčko svého tahu."""
         return self.__mark
