@@ -356,4 +356,163 @@ class OffensiveProgressInSecondDiagonal(Evaluator):
         return 0
 
 
+class DefensiveProgressInRow(Evaluator):
+    """Instance této třídy jsou odpovědné za zjištění pozitivního postupu ve
+    hře. Konkrétně se tyto instance zaměřují na měření ceny z postupného
+    plnění řádků.
+    """
+
+    def evaluate(self, board: list[list[str]], player_mark: str,
+                 opponent_mark: str) -> float:
+        """Metoda, která má za cíl vyhodnotit otisk hrací plochy co do
+        postupného plnění řádku. S rostoucím počtem vyplněných políček v
+        řádku roste i užitek z tohoto řádku. Pokud je řádek vyplněn byť
+        jen jedinou značkou oponenta, již nemá smysl tento řádek uvažovat
+        jako jakkoliv užitečný.
+
+        Tento proces je pak proveden nad všemi řádky hrací plochy.
+
+        Parameters
+        ----------
+        board: list[list[str]]
+            Otisk hrací plochy, která má být vyhodnocena co do počtu políček
+            daného hráče v jednotlivých řádcích
+
+        player_mark: str
+            Značka, kterou používá sledovaný hráč
+
+        opponent_mark: str
+            Značka, kterou používá oponent sledovaného hráče
+
+        Returns
+        -------
+        float
+            Reálné číslo odpovídající užitku sledovaného hráče
+        """
+        total = 0
+        for row in board:
+            if player_mark not in row:
+                total -= row.count(opponent_mark) ** 2 / len(row)
+        return total * self.ratio
+
+
+class DefensiveProgressInColumn(Evaluator):
+    """Instance této třídy jsou odpovědné za zjištění pozitivního postupu ve
+    hře. Konkrétně se tyto instance zaměřují na měření užitku z postupného
+    plnění sloupců.
+    """
+
+    def evaluate(self, board: list[list[str]], player_mark: str,
+                 opponent_mark: str) -> float:
+        """Metoda, která má za cíl vyhodnotit otisk hrací plochy co do
+        postupného plnění sloupce. S rostoucím počtem vyplněných políček
+        ve sloupci roste i užitek z tohoto sloupce. Pokud je sloupeček
+        vyplněn byť jen jedinou značkou oponenta, již nemá smysl tento
+        sloupec uvažovat jako jakkoliv užitečný.
+
+        Tento proces je pak proveden nad všemi sloupci hrací plochy.
+
+        Parameters
+        ----------
+        board: list[list[str]]
+            Otisk hrací plochy, která má být vyhodnocena co do počtu políček
+            daného hráče v jednotlivých sloupcích
+
+        player_mark: str
+            Značka, kterou používá sledovaný hráč
+
+        opponent_mark: str
+            Značka, kterou používá oponent sledovaného hráče
+
+        Returns
+        -------
+        float
+            Reálné číslo odpovídající užitku sledovaného hráče
+        """
+        total = 0
+        for x in range(len(board)):
+            column = [board[y][x] for y in range(len(board))]
+            if player_mark not in column:
+                total -= column.count(opponent_mark) ** 2 / len(column)
+        return total * self.ratio
+
+
+class DefensiveProgressInFirstDiagonal(Evaluator):
+    """Instance této třídy jsou odpovědné za zjištění pozitivního postupu ve
+    hře. Konkrétně se tyto instance zaměřují na měření užitku z postupného
+    plnění první diagonály, tedy té z vedoucí z levého horního rohu do toho
+    pravého spodního.
+    """
+
+    def evaluate(self, board: list[list[str]], player_mark: str,
+                 opponent_mark: str) -> float:
+        """Metoda, která má za cíl vyhodnotit otisk hrací plochy co do
+        postupného plnění první diagonály. S rostoucím počtem vyplněných
+        políček na diagonále roste i užitek. Pokud je diagonála vyplněna
+        byť jen jedinou značkou oponenta, již nemá smysl tuto diagonálu
+        uvažovat jako jakkoliv užitečnou.
+
+        Parameters
+        ----------
+        board: list[list[str]]
+            Otisk hrací plochy, která má být vyhodnocena co do počtu políček
+            daného hráče na první diagonále (vedoucí z levého horního rohu
+            do toho pravého dolního)
+
+        player_mark: str
+            Značka, kterou používá sledovaný hráč
+
+        opponent_mark: str
+            Značka, kterou používá oponent sledovaného hráče
+
+        Returns
+        -------
+        float
+            Reálné číslo odpovídající užitku sledovaného hráče
+        """
+        length = len(board)
+        diagonal = [board[i][i] for i in range(length)]
+        if player_mark not in diagonal:
+            return -(diagonal.count(opponent_mark) ** 2 / length) * self.ratio
+        return 0
+
+
+class DefensiveProgressInSecondDiagonal(Evaluator):
+    """Instance této třídy jsou odpovědné za zjištění pozitivního postupu ve
+    hře. Konkrétně se tyto instance zaměřují na měření užitku z postupného
+    plnění druhé diagonály, tedy té z vedoucí z levého spodního rohu do toho
+    pravého horního.
+    """
+
+    def evaluate(self, board: list[list[str]], player_mark: str,
+                 opponent_mark: str) -> float:
+        """Metoda, která má za cíl vyhodnotit otisk hrací plochy co do
+        postupného plnění druhé diagonály. S rostoucím počtem vyplněných
+        políček na diagonále roste i užitek. Pokud je diagonála vyplněna
+        byť jen jedinou značkou oponenta, již nemá smysl tuto diagonálu
+        uvažovat jako jakkoliv užitečnou.
+
+        Parameters
+        ----------
+        board: list[list[str]]
+            Otisk hrací plochy, která má být vyhodnocena co do počtu políček
+            daného hráče na druhé diagonále (vedoucí z levého dolního rohu
+            do toho pravého horního)
+
+        player_mark: str
+            Značka, kterou používá sledovaný hráč
+
+        opponent_mark: str
+            Značka, kterou používá oponent sledovaného hráče
+
+        Returns
+        -------
+        float
+            Reálné číslo odpovídající užitku sledovaného hráče
+        """
+        length = len(board)
+        diagonal = [board[length - i - 1][i] for i in range(length)]
+        if player_mark not in diagonal:
+            return -(diagonal.count(opponent_mark) ** 2 / length) * self.ratio
+        return 0
 
