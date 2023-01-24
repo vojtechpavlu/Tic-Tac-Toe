@@ -4,7 +4,7 @@ Cílem tohoto hráče je demonstrovat hledání optimální strategie.
 
 from src.game.board import BoardSnapshot
 from src.game.player import Player
-from src.players.minmax_player.utils import is_terminate, translate_board
+from src.players.rational_npc_player.utils import is_terminate, translate_board
 
 
 class MinmaxNPC(Player):

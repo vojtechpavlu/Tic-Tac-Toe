@@ -9,4 +9,4 @@ všech hráčů.
 from .human_player.human_player import HumanPlayer
 from .random_player.random_npc_player import RandomNPCPlayer
 from .custom_player.custom_player import CustomPlayer
-from .minmax_player.minmax_player import MinmaxPlayer
+from .rational_npc_player import MinmaxNPC
