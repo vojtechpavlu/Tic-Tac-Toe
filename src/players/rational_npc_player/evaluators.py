@@ -9,6 +9,15 @@ class Evaluator(ABC):
     užitku pro danou hrací plochu daného sledovaného hráče.
     """
 
+    def __init__(self, ratio: float = 1):
+        """"""
+        self.__ratio = ratio
+
+    @property
+    def ratio(self) -> float:
+        """"""
+        return self.__ratio
+
     @abstractmethod
     def evaluate(self, board: list[list[str]], player_mark: str,
                  opponent_mark: str) -> float:
@@ -223,7 +232,7 @@ class OffensiveProgressInRow(Evaluator):
         for row in board:
             if opponent_mark not in row:
                 total += row.count(player_mark) ** 2 / len(row)
-        return total
+        return total * self.ratio
 
 
 class OffensiveProgressInColumn(Evaluator):
@@ -264,7 +273,7 @@ class OffensiveProgressInColumn(Evaluator):
             column = [board[y][x] for y in range(len(board))]
             if opponent_mark not in column:
                 total += column.count(player_mark) ** 2 / len(column)
-        return total
+        return total * self.ratio
 
 
 class OffensiveProgressInFirstDiagonal(Evaluator):
@@ -303,7 +312,7 @@ class OffensiveProgressInFirstDiagonal(Evaluator):
         length = len(board)
         diagonal = [board[i][i] for i in range(length)]
         if opponent_mark not in diagonal:
-            return diagonal.count(player_mark) ** 2 / length
+            return (diagonal.count(player_mark) ** 2 / length) * self.ratio
         return 0
 
 
@@ -343,7 +352,7 @@ class OffensiveProgressInSecondDiagonal(Evaluator):
         length = len(board)
         diagonal = [board[length - i - 1][i] for i in range(length)]
         if opponent_mark not in diagonal:
-            return diagonal.count(player_mark) ** 2 / length
+            return (diagonal.count(player_mark) ** 2 / length) * self.ratio
         return 0
 
 
