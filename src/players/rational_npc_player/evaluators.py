@@ -1,4 +1,7 @@
-""""""
+"""Tento modul obsahuje evaluátory snímků hracích ploch.
+
+Jejich význam spočívá v číselném vyhodnocení kvality hrací plochy (užitek,
+resp. případně cena) pro sledovaného hráče."""
 
 from abc import ABC, abstractmethod
 
@@ -7,16 +10,22 @@ class Evaluator(ABC):
     """Abstraktní třída, jejíž potomci jsou odpovědni za implementaci
     abstraktní metody `evaluate`, která poskytuje službu získání hodnoty
     užitku pro danou hrací plochu daného sledovaného hráče.
+
+    Kromě toho jsou tyto evaluátory vybaveny koeficientem (`weight`), které
+    dokáže zdůraznit význam sledované veličiny.
     """
 
-    def __init__(self, ratio: float = 1):
-        """"""
-        self.__ratio = ratio
+    def __init__(self, weight: float = 1):
+        """Initor, který přijímá reálné číslo `weight` symbolizující význam
+        příslušného evaluátoru. Čím vyšší číslo, tím je kladen větší důraz
+        na hodnotu daného evaluátoru.
+        """
+        self.__weight = weight
 
     @property
-    def ratio(self) -> float:
-        """"""
-        return self.__ratio
+    def weight(self) -> float:
+        """Číslo reprezentující význam (váhu) daného evaluátoru."""
+        return self.__weight
 
     @abstractmethod
     def evaluate(self, board: list[list[str]], player_mark: str,
@@ -232,7 +241,7 @@ class OffensiveProgressInRow(Evaluator):
         for row in board:
             if opponent_mark not in row:
                 total += row.count(player_mark) ** 2 / len(row)
-        return total * self.ratio
+        return total * self.weight
 
 
 class OffensiveProgressInColumn(Evaluator):
@@ -273,7 +282,7 @@ class OffensiveProgressInColumn(Evaluator):
             column = [board[y][x] for y in range(len(board))]
             if opponent_mark not in column:
                 total += column.count(player_mark) ** 2 / len(column)
-        return total * self.ratio
+        return total * self.weight
 
 
 class OffensiveProgressInFirstDiagonal(Evaluator):
@@ -312,7 +321,7 @@ class OffensiveProgressInFirstDiagonal(Evaluator):
         length = len(board)
         diagonal = [board[i][i] for i in range(length)]
         if opponent_mark not in diagonal:
-            return (diagonal.count(player_mark) ** 2 / length) * self.ratio
+            return (diagonal.count(player_mark) ** 2 / length) * self.weight
         return 0
 
 
@@ -352,7 +361,7 @@ class OffensiveProgressInSecondDiagonal(Evaluator):
         length = len(board)
         diagonal = [board[length - i - 1][i] for i in range(length)]
         if opponent_mark not in diagonal:
-            return (diagonal.count(player_mark) ** 2 / length) * self.ratio
+            return (diagonal.count(player_mark) ** 2 / length) * self.weight
         return 0
 
 
@@ -393,7 +402,7 @@ class DefensiveProgressInRow(Evaluator):
         for row in board:
             if player_mark not in row:
                 total -= row.count(opponent_mark) ** 2 / len(row)
-        return total * self.ratio
+        return total * self.weight
 
 
 class DefensiveProgressInColumn(Evaluator):
@@ -434,7 +443,7 @@ class DefensiveProgressInColumn(Evaluator):
             column = [board[y][x] for y in range(len(board))]
             if player_mark not in column:
                 total -= column.count(opponent_mark) ** 2 / len(column)
-        return total * self.ratio
+        return total * self.weight
 
 
 class DefensiveProgressInFirstDiagonal(Evaluator):
@@ -473,7 +482,7 @@ class DefensiveProgressInFirstDiagonal(Evaluator):
         length = len(board)
         diagonal = [board[i][i] for i in range(length)]
         if player_mark not in diagonal:
-            return -(diagonal.count(opponent_mark) ** 2 / length) * self.ratio
+            return -(diagonal.count(opponent_mark) ** 2 / length) * self.weight
         return 0
 
 
@@ -513,6 +522,6 @@ class DefensiveProgressInSecondDiagonal(Evaluator):
         length = len(board)
         diagonal = [board[length - i - 1][i] for i in range(length)]
         if player_mark not in diagonal:
-            return -(diagonal.count(opponent_mark) ** 2 / length) * self.ratio
+            return -(diagonal.count(opponent_mark) ** 2 / length) * self.weight
         return 0
 
