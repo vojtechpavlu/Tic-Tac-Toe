@@ -88,7 +88,8 @@ Nad rámec frameworku projekt dále definuje základní hráče (viz balíček
 - **Lidský hráč** (`HumanPlayer`), který umožňuje zkoušet hru člověkem
 - **Náhodný hráč** (`RandomNPCPlayer`), který umožňuje demonstrovat hru 
 neracionálního agenta, který své tahy volí zcela nahodile z dodaných možných
-- ***TODO***
+- **Minmax hráč** (`MinmaxPlayer`), který umožňuje demonstrovat racionálního
+strojového hráče
 
 Obecný protokol hráče je definován abstraktní třídou `Player` v balíčku 
 `./src/game/`, jejíž instance jsou především nositeli jména hráče, znaku 
@@ -119,4 +120,78 @@ funkce `random.choice(Iterable[T]) -> T`, která vrací jeden náhodný element
 z dodané iterovatelné sekvence. V tomto případě z množiny povolených tahů.
 
 
-### TODO
+### Minmax hráč (`MinmaxPlayer`)
+
+Automatický hráč, který své tahy volí na základě minmax algoritmu.
+
+Celý princip algoritmu vychází z teorie rozhodování a je založen na
+volbě rozhodnutí na základě tzv. *garančního prinicpu*. Ten nám říká, že
+optimálního rozhodnutí lze dosáhnout pouze tak, že budeme uvažovat tu
+nejlepší alternativu z těch nejhorších. Důvodem je, že cílení na absolutní
+maximum užitkové funkce (resp. minimum funkce cenové) není vhodnou strategií,
+neboť nejsme schopni vyloučit, že uvízneme v lokálním extrému. V teorii her 
+pak předpokládáme, že náš oponent (antagonista) bude volit tahy stejně 
+racionálně, jako my a udělá vše pro to, aby naši výplatní funkci minimalizoval.
+
+Matematizovat by šel tento vztah následovně:
+
+Mějme matici hodnot výpatních funkcí pro kombinaci zvolených strategií oběma
+hráči
+
+ ```math
+ 
+ \begin{pmatrix}
+ u_{11} & u_{12} & \dots & u_{1k} \\
+ u_{21} & u_{22} & \dots & u_{2k} \\
+ \vdots & \vdots & \ddots & \vdots \\
+ u_{j1} & u_{j2} & \dots & u_{jk} \\
+ \end{pmatrix}
+ 
+ ```
+
+užitek z rozhodnutí hráče 1 (výběr v řádku) se odvíjí i od rozhodnutí hráče 2
+(výběr sloupečku). Jelikož u obou hráčů předpokládáme racionalitu, nemá smysl
+použítat
+
+- **Rozhodování za rizika** - oponent nevybírá tahy na základě náhody
+  (nejde o hru proti přírodě), čímž se tato varianta vylučuje
+  
+```math
+    i^{*} = \max_{i} \sum_{j=1}^{t} u_{jk} \cdot p_{j}
+```
+
+- **Princip maximální entropie** - oponent vybírá své tahy v transparentní 
+  snaze minimalizovat náš užitek, s čímž se tento přístup zdá být neefektivní
+  
+```math
+    i^{*} = \max_{i} \sum_{j=1}^{t} u_{jk}
+```
+
+Oproti tomu garanční minmax strategie uvažuje, že racionální hráč se nám bude
+snažit *"házet klacky pod nohy"* a bude tedy dělat takové tahy, které nám
+pokud možno co nejvíce sníží hodnotu užitkové funkce.
+
+```math
+    i^{*} = \max_{j} \min_{k} u_{jk}
+```
+
+Jak je vidět na tomto vzorci, vybíráme tedy nejlepší z nejhorších možných 
+řešení. Při správném zakomponování této idee do algoritmu pak můžeme dosáhnout
+programu strojového hráče, který nemůže prohrát - volí totiž tahy uvažujíce i
+zastoupení strategie oponenta (hledáme takzvaný
+[sedlový bod](https://cs.wikipedia.org/wiki/Strategie_(teorie_her)#Sedlov%C3%BD_bod)).
+
+Konkrétní použitá implementace vychází z aplikace tohoto přístupu a prostého
+backtrackingu, tedy rekurzivně zkoušíme prohledávat do hloubky - aplikací tahů.
+Střídáme přitom maximalizační a minimalizační funkci (zastoupení obou hráčů),
+abychom vypočítali racionální průběh hry.
+
+S tím však přichází problém s komplexitou hry. Přesto, že se piškvorky zdají 
+býti hrou zcela banální, tento algoritmus se může potýkat se svými nedostatky.
+Sice garantuje, že nikdy neprohraje (nejhorší možný výsledek je remíza), ale
+naráží na problém s časovou složitostí - jde o tzv. *brute force* algoritmus.
+Celá implementace stojí na prostém vybudování celého stormu, z jehož listů
+*probublává* až ke kořeni kvalita sekvence rozhodnutí (vedoucí k terminálním
+uzlům). Počet uzlů, které se musí prohledat značně omezuje použití v reálném
+čase. Pro piškvorky o větší než 9polní hrací ploše se stává kvůli výpočetní
+složitosti již prakticky nepoužitelným.
