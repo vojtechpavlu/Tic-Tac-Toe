@@ -150,8 +150,12 @@ hráči
  ```
 
 užitek z rozhodnutí hráče 1 (výběr v řádku) se odvíjí i od rozhodnutí hráče 2
-(výběr sloupečku). Jelikož u obou hráčů předpokládáme racionalitu, nemá smysl
-použítat
+(výběr sloupečku). Uvědomme si, že $j$ se nemusí nutně rovnat $k$, tedy že 
+každý z hráčů může stát před vícero svými rozhodnutími, jejichž počet nemusí
+být pro oba stejný. 
+
+Jelikož u obou hráčů předpokládáme racionalitu, nemá smysl uvažovat
+
 
 - **Rozhodování za rizika** - oponent nevybírá tahy na základě náhody
   (nejde o hru proti přírodě), čímž se tato varianta vylučuje
