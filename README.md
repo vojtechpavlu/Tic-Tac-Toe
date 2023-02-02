@@ -209,7 +209,7 @@ tahu v ještě nedokončené hře (tedy když ani jeden z hráčů ještě nevyh
 nebyla remíza).
 
 Třídu tohoto hráče lze nalézt v modulu `players/rational_npc_player/heuristic_minmax_npc.py`,
-pod názvem LimitedMinmaxPlayer, což zdůrazňuje skutečnou podstatu výhory hráče - 
+pod názvem `LimitedMinmaxPlayer`, což zdůrazňuje skutečnou podstatu výhody hráče - 
 prohledávání pouze do omezené hloubky.
 
 K tomu byla definována sada evaluačních funkcí, které dokáží hrací plochu ohodnotit
@@ -227,7 +227,7 @@ Celý princip lze matematizovat následovně:
 tedy že na libovolný stav $s$ z množiny přípustných stavů $S$ lze aplikovat 
 evaluační funkci $f$, která tento převádí na reálné číslo.
 
-Tyto evaluační funkce se liší především v cílové vlastnosti roložení hrací plochy,
+Tyto evaluační funkce se liší především v cílové vlastnosti rozložení hrací plochy,
 tedy měří míru potenciálu výhry v řádcích, sloupcích a na diagonálách. Stejně tak
 rozlišují významnost pro daného hráče, tedy zda-li odpovídají spíše defensivě či ofensivě.
 
