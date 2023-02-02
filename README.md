@@ -120,7 +120,7 @@ funkce `random.choice(Iterable[T]) -> T`, která vrací jeden náhodný element
 z dodané iterovatelné sekvence. V tomto případě z množiny povolených tahů.
 
 
-### Minmax hráč (`MinmaxPlayer`)
+### Minmax hráč (`MinmaxPlayer`) <a id="minmax-player"></a>
 
 Automatický hráč, který své tahy volí na základě minmax algoritmu.
 
@@ -190,7 +190,7 @@ backtrackingu, tedy rekurzivně zkoušíme prohledávat do hloubky - aplikací t
 Střídáme přitom maximalizační a minimalizační funkci (zastoupení obou hráčů),
 abychom vypočítali racionální průběh hry.
 
-S tím však přichází problém s komplexitou hry. Přesto, že se piškvorky zdají 
+S tím však přichází problém s komplexitou hry. Přestože se piškvorky zdají 
 býti hrou zcela banální, tento algoritmus se může potýkat se svými nedostatky.
 Sice garantuje, že nikdy neprohraje (nejhorší možný výsledek je remíza), ale
 naráží na problém s časovou složitostí - jde o tzv. *brute force* algoritmus.
@@ -199,3 +199,63 @@ Celá implementace stojí na prostém vybudování celého stormu, z jehož list
 uzlům). Počet uzlů, které se musí prohledat značně omezuje použití v reálném
 čase. Pro piškvorky o větší než 9polní hrací ploše se stává kvůli výpočetní
 složitosti již prakticky nepoužitelným.
+
+
+### Heuristický hráč
+
+Abychom kompenzovali složitost výběru dalšího tahu pro (Minmax hráče)[#minmax-player],
+lze použít vícero strategií. Jednou z nich je heuristické ohodnocování bonity
+tahu v ještě nedokončené hře (tedy když ani jeden z hráčů ještě nevyhrál a zároveň
+nebyla remíza).
+
+Třídu tohoto hráče lze nalézt v modulu `players/rational_npc_player/heuristic_minmax_npc.py`,
+pod názvem `LimitedMinmaxPlayer`, což zdůrazňuje skutečnou podstatu výhody hráče - 
+prohledávání pouze do omezené hloubky.
+
+K tomu byla definována sada evaluačních funkcí, které dokáží hrací plochu ohodnotit
+co do potenciálu k výhře. Tyto lze nalézt v modulu `players/rational_npc_player/evaluators.py`.
+Díky tomu lze budovat podobný strom reprezentující všechny posloupnosti rozhodování
+jen do stanovené hloubky; listy v takto zadané hloubce stromu pak nemusí nutně být
+koncem hry a přesto mohou sloužit k rozhodnutí.
+
+Celý princip lze matematizovat následovně:
+
+```math
+  \forall s \in S, f(s) \rightarrow \mathbb{R}
+```
+
+tedy že na libovolný stav $s$ z množiny přípustných stavů $S$ lze aplikovat 
+evaluační funkci $f$, která tento převádí na reálné číslo.
+
+Tyto evaluační funkce se liší především v cílové vlastnosti rozložení hrací plochy,
+tedy měří míru potenciálu výhry v řádcích, sloupcích a na diagonálách. Stejně tak
+rozlišují významnost pro daného hráče, tedy zda-li odpovídají spíše defensivě či ofensivě.
+
+Dalším důležitou vlastností těchto evaluačních funkcí je skutečnost, že je možné
+tyto ovlivňovat co do významu - kvantifikátoru sledování.
+
+Pro příklad lze uvést následnou implementaci takového hráče vybaveného
+heuristickými funkcemi:
+
+```python
+npc = LimitedMinmaxPlayer(
+    player_name="Limited Minmax", mark="O", max_depth=5, evaluators=[
+        OffensiveProgressInRow(weight=3),
+        OffensiveProgressInColumn(weight=3),
+        OffensiveProgressInFirstDiagonal(weight=3),
+        OffensiveProgressInSecondDiagonal(weight=3),
+        DefensiveProgressInRow(),
+        DefensiveProgressInColumn(),
+        DefensiveProgressInFirstDiagonal(),
+        DefensiveProgressInSecondDiagonal()
+    ]
+)
+```
+
+Takový hráč se bude snažit hrát racionálně a *"myslet"* až do hloubky pěti
+tahů dopředu (nikoliv však až na konec celého stromu), přičemž bude významně 
+větší důraz dávat na ofensivu než primárně na snahu bránit svému oponentovi v 
+jeho snažení.
+
+
+
